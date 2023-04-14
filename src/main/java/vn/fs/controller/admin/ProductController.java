@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import vn.fs.entities.CategoryEntity;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 import vn.fs.entities.User;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.ProductRepository;
@@ -73,8 +73,8 @@ public class ProductController{
 
 	// show list product - table list
 	@ModelAttribute("products")
-	public List<Product> showProduct(Model model) {
-		List<Product> products = productRepository.findAll();
+	public List<ProductEntity> showProduct(Model model) {
+		List<ProductEntity> products = productRepository.findAll();
 		model.addAttribute("products", products);
 
 		return products;
@@ -82,7 +82,7 @@ public class ProductController{
 
 	@GetMapping(value = "/products")
 	public String products(Model model, Principal principal) {
-		Product product = new Product();
+		ProductEntity product = new ProductEntity();
 		model.addAttribute("product", product);
 
 		return "admin/products";
@@ -90,7 +90,7 @@ public class ProductController{
 
 	// add product
 	@PostMapping(value = "/addProduct")
-	public String addProduct(@ModelAttribute("product") Product product, ModelMap model,
+	public String addProduct(@ModelAttribute("product") ProductEntity product, ModelMap model,
 			@RequestParam("file") MultipartFile file, HttpServletRequest httpServletRequest) {
 
 		try {
@@ -104,7 +104,7 @@ public class ProductController{
 		}
 
 		product.setProductImage(file.getOriginalFilename());
-		Product p = productRepository.save(product);
+		ProductEntity p = productRepository.save(product);
 		if (null != p) {
 			model.addAttribute("message", "Update success");
 			model.addAttribute("product", product);
@@ -128,7 +128,7 @@ public class ProductController{
 	// get Edit brand
 	@GetMapping(value = "/editProduct/{id}")
 	public String editCategory(@PathVariable("id") Long id, ModelMap model) {
-		Product product = productRepository.findById(id).orElse(null);
+		ProductEntity product = productRepository.findById(id).orElse(null);
 		
 		model.addAttribute("product", product);
 

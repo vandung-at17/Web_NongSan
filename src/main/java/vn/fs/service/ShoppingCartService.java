@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.stereotype.Service;
 
 import vn.fs.entities.CartItem;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 
 /**
  * @author DongTHD
@@ -26,6 +26,6 @@ public interface ShoppingCartService {
 
 	void add(CartItem item);
 
-	void remove(Product product);
+	void remove(ProductEntity product);
 
 }

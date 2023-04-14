@@ -1,4 +1,4 @@
-package vn.fs.dto;
+package vn.fs.model.dto;
 
 import java.io.IOException;
 import java.util.List;

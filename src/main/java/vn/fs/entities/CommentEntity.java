@@ -44,7 +44,7 @@ public class CommentEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "productId")
-	private Product product;
+	private ProductEntity product;
 
 	@OneToOne
 	@JoinColumn(name = "orderDetailId")

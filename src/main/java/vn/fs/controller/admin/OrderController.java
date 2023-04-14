@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import vn.fs.dto.OrderExcelExporter;
+import vn.fs.model.dto.OrderExcelExporter;
 import vn.fs.entities.Order;
 import vn.fs.entities.OrderDetail;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 import vn.fs.entities.User;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
@@ -126,7 +126,7 @@ public class OrderController {
 			oReal.setStatus((short) 2);
 			orderRepository.save(oReal);
 
-			Product p = null;
+			ProductEntity p = null;
 			List<OrderDetail> listDe = orderDetailRepository.findByOrderId(id);
 			for (OrderDetail od : listDe) {
 				p = od.getProduct();

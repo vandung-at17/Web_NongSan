@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -17,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import vn.fs.entities.CategoryEntity;
 import vn.fs.entities.User;
+import vn.fs.model.dto.CategoryDto;
+import vn.fs.model.response.PaginateResponse;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.UserRepository;
+import vn.fs.service.ICategoryService;
 
 
 /**
@@ -31,6 +36,9 @@ public class CategoryController {
 
 	@Autowired
 	CategoryRepository categoryRepository;
+	
+	@Autowired
+	private ICategoryService categoryService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -51,18 +59,27 @@ public class CategoryController {
 
 	// show list category - table list
 	// Hiển thị danh mục - danh sách thể loại
-	@ModelAttribute("categories")
-	public List<CategoryEntity> showCategory(Model model) {
-		List<CategoryEntity> categories = categoryRepository.findAll();
-		model.addAttribute("categories", categories);
-		model.addAttribute("message", message);
-		message=null;
-		return categories;
-	}
+//	@ModelAttribute("categories")
+//	public List<CategoryEntity> showCategory(Model model) {
+//		List<CategoryEntity> categories = categoryRepository.findAll();
+//		model.addAttribute("categories", categories);
+//		model.addAttribute("message", message);
+//		message=null;
+//		return categories;
+//	}
 
 	@GetMapping(value = "/categories")
 	public String categories(Model model, Principal principal) {
 		model.addAttribute("category", new CategoryEntity());
+		int currentPage = 1;
+		int limit = 5;
+		Pageable pageable = PageRequest.of(currentPage-1, limit);	
+		List<CategoryDto> categoryDtos = categoryService.findAllCategoryOfPage(pageable);
+		model.addAttribute("categories", categoryService.findAllCategoryOfPage(pageable));
+		PaginateResponse paginateResponse = new PaginateResponse();
+		paginateResponse.setTotalPage((int) Math.ceil((double) categoryService.getTotalItem() /limit));
+		paginateResponse.setPage(currentPage);
+		model.addAttribute("paginate", paginateResponse);
 		return "admin/categories";
 	}
 

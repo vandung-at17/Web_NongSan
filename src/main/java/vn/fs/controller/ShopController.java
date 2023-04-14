@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Favorite;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 import vn.fs.entities.User;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
@@ -48,7 +48,7 @@ public class ShopController extends CommomController {
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(12);
 
-		Page<Product> productPage = findPaginated(PageRequest.of(currentPage - 1, pageSize));
+		Page<ProductEntity> productPage = findPaginated(PageRequest.of(currentPage - 1, pageSize));
 
 		int totalPages = productPage.getTotalPages();
 		if (totalPages > 0) {
@@ -62,14 +62,14 @@ public class ShopController extends CommomController {
 		return "web/shop";
 	}
 
-	public Page<Product> findPaginated(Pageable pageable) {
+	public Page<ProductEntity> findPaginated(Pageable pageable) {
 
-		List<Product> productPage = productRepository.findAll();
+		List<ProductEntity> productPage = productRepository.findAll();
 
 		int pageSize = pageable.getPageSize();
 		int currentPage = pageable.getPageNumber();
 		int startItem = currentPage * pageSize;
-		List<Product> list;
+		List<ProductEntity> list;
 
 		if (productPage.size() < startItem) {
 			list = Collections.emptyList();
@@ -78,7 +78,7 @@ public class ShopController extends CommomController {
 			list = productPage.subList(startItem, toIndex);
 		}
 
-		Page<Product> productPages = new PageImpl<Product>(list, PageRequest.of(currentPage, pageSize),productPage.size());
+		Page<ProductEntity> productPages = new PageImpl<ProductEntity>(list, PageRequest.of(currentPage, pageSize),productPage.size());
 
 		return productPages;
 	}
@@ -92,7 +92,7 @@ public class ShopController extends CommomController {
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(12);
 
-		Page<Product> productPage = findPaginatSearch(PageRequest.of(currentPage - 1, pageSize), keyword);
+		Page<ProductEntity> productPage = findPaginatSearch(PageRequest.of(currentPage - 1, pageSize), keyword);
 
 		int totalPages = productPage.getTotalPages();
 		if (totalPages > 0) {
@@ -106,14 +106,14 @@ public class ShopController extends CommomController {
 	}
 	
 	// search product
-	public Page<Product> findPaginatSearch(Pageable pageable, @RequestParam("keyword") String keyword) {
+	public Page<ProductEntity> findPaginatSearch(Pageable pageable, @RequestParam("keyword") String keyword) {
 
-		List<Product> productPage = productRepository.searchProduct(keyword);
+		List<ProductEntity> productPage = productRepository.searchProduct(keyword);
 
 		int pageSize = pageable.getPageSize();
 		int currentPage = pageable.getPageNumber();
 		int startItem = currentPage * pageSize;
-		List<Product> list;
+		List<ProductEntity> list;
 
 		if (productPage.size() < startItem) {
 			list = Collections.emptyList();
@@ -122,7 +122,7 @@ public class ShopController extends CommomController {
 			list = productPage.subList(startItem, toIndex);
 		}
 
-		Page<Product> productPages = new PageImpl<Product>(list, PageRequest.of(currentPage, pageSize),productPage.size());
+		Page<ProductEntity> productPages = new PageImpl<ProductEntity>(list, PageRequest.of(currentPage, pageSize),productPage.size());
 
 		return productPages;
 	}
@@ -130,13 +130,13 @@ public class ShopController extends CommomController {
 	// list books by category
 	@GetMapping(value = "/productByCategory")
 	public String listProductbyid(Model model, @RequestParam("id") Long id, User user) {
-		List<Product> products = productRepository.listProductByCategory(id);
+		List<ProductEntity> products = productRepository.listProductByCategory(id);
 
-		List<Product> listProductNew = new ArrayList<>();
+		List<ProductEntity> listProductNew = new ArrayList<>();
 
-		for (Product product : products) {
+		for (ProductEntity product : products) {
 
-			Product productEntity = new Product();
+			ProductEntity productEntity = new ProductEntity();
 
 			BeanUtils.copyProperties(product, productEntity);
 

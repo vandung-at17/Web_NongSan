@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Favorite;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 import vn.fs.entities.User;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
@@ -41,7 +41,7 @@ public class FavoriteController extends CommomController {
 
 	@GetMapping(value = "/doFavorite")
 	public String doFavorite(Model model, Favorite favorite, User user, @RequestParam("id") Long id) {
-		Product product = productRepository.findById(id).orElse(null);
+		ProductEntity product = productRepository.findById(id).orElse(null);
 		favorite.setProduct(product);
 		favorite.setUser(user);
 		product.setFavorite(true);
@@ -51,7 +51,7 @@ public class FavoriteController extends CommomController {
 	}
 
 	@GetMapping(value = "/doUnFavorite")
-	public String doUnFavorite(Model model, Product product, User user, @RequestParam("id") Long id) {
+	public String doUnFavorite(Model model, ProductEntity product, User user, @RequestParam("id") Long id) {
 		Favorite favorite = favoriteRepository.selectSaves(id, user.getUserId());
 		product = productRepository.findById(id).orElse(null);
 		product.setFavorite(false);

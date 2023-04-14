@@ -7,30 +7,30 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 
 /**
  * @author DongTHD
  *
  */
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
 	// List product by category
 	@Query(value = "SELECT * FROM products WHERE category_id = ?", nativeQuery = true)
-	public List<Product> listProductByCategory(Long categoryId);
+	public List<ProductEntity> listProductByCategory(Long categoryId);
 
 	// Top 10 product by category
 	@Query(value = "SELECT * FROM products AS b WHERE b.category_id = ?;", nativeQuery = true)
-	List<Product> listProductByCategory10(Long categoryId);
+	List<ProductEntity> listProductByCategory10(Long categoryId);
 	
 	// List product new
 	@Query(value = "SELECT * FROM products ORDER BY entered_date DESC limit 20;", nativeQuery = true)
-	public List<Product> listProductNew20();
+	public List<ProductEntity> listProductNew20();
 	
 	// Search Product
 	@Query(value = "SELECT * FROM products WHERE product_name LIKE %?1%" , nativeQuery = true)
-	public List<Product> searchProduct(String productName);
+	public List<ProductEntity> searchProduct(String productName);
 	
 	// count quantity by product
 	@Query(value = "SELECT c.category_id,c.category_name,\r\n"
@@ -50,6 +50,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	public List<Object[]> bestSaleProduct20();
 	
 	@Query(value = "select * from products o where product_id in :ids", nativeQuery = true)
-	List<Product> findByInventoryIds(@Param("ids") List<Integer> listProductId);
+	List<ProductEntity> findByInventoryIds(@Param("ids") List<Integer> listProductId);
 
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import vn.fs.dto.ChangePassword;
+import vn.fs.model.dto.ChangePassword;
 import vn.fs.entities.User;
 import vn.fs.repository.UserRepository;
 import vn.fs.service.SendMailService;

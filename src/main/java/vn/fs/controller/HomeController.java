@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Favorite;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 import vn.fs.entities.User;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
@@ -43,8 +43,8 @@ public class HomeController extends CommomController {
 	
 	// list product ở trang chủ limit 10 sản phẩm mới nhất
 	@ModelAttribute("listProduct10")
-	public List<Product> listproduct10(Model model) {
-		List<Product> productList = productRepository.listProductNew20();
+	public List<ProductEntity> listproduct10(Model model) {
+		List<ProductEntity> productList = productRepository.listProductNew20();
 		model.addAttribute("productList", productList);
 		return productList;
 	}
@@ -58,13 +58,13 @@ public class HomeController extends CommomController {
 				String id = String.valueOf(productList.get(i)[0]);
 				listIdProductArrayList.add(Integer.valueOf(id));
 			}
-			List<Product> listProducts = productRepository.findByInventoryIds(listIdProductArrayList);
+			List<ProductEntity> listProducts = productRepository.findByInventoryIds(listIdProductArrayList);
 
-			List<Product> listProductNew = new ArrayList<>();
+			List<ProductEntity> listProductNew = new ArrayList<>();
 
-			for (Product product : listProducts) {
+			for (ProductEntity product : listProducts) {
 
-				Product productEntity = new Product();
+				ProductEntity productEntity = new ProductEntity();
 
 				BeanUtils.copyProperties(product, productEntity);
 

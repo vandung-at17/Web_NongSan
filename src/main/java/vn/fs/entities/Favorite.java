@@ -36,6 +36,6 @@ public class Favorite implements Serializable {
 
 	@ManyToOne()
 	@JoinColumn(name = "productId")
-	private Product product;
+	private ProductEntity product;
 
 }

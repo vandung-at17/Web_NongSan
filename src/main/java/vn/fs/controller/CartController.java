@@ -30,7 +30,7 @@ import vn.fs.config.PaypalPaymentMethod;
 import vn.fs.entities.CartItem;
 import vn.fs.entities.Order;
 import vn.fs.entities.OrderDetail;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 import vn.fs.entities.User;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
@@ -91,7 +91,7 @@ public class CartController extends CommomController {
 	@GetMapping(value = "/addToCart")
 	public String add(@RequestParam("productId") Long productId, HttpServletRequest request, Model model) {
 
-		Product product = productRepository.findById(productId).orElse(null);
+		ProductEntity product = productRepository.findById(productId).orElse(null);
 
 		session = request.getSession();
 		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
@@ -113,7 +113,7 @@ public class CartController extends CommomController {
 	@SuppressWarnings("unlikely-arg-type")
 	@GetMapping(value = "/remove/{id}")
 	public String remove(@PathVariable("id") Long id, HttpServletRequest request, Model model) {
-		Product product = productRepository.findById(id).orElse(null);
+		ProductEntity product = productRepository.findById(id).orElse(null);
 
 		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
 		session = request.getSession();

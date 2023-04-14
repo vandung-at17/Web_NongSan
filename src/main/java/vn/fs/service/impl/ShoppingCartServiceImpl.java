@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import vn.fs.entities.CartItem;
-import vn.fs.entities.Product;
+import vn.fs.entities.ProductEntity;
 import vn.fs.service.ShoppingCartService;
 
 /**
@@ -63,7 +63,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	}
 
 	@Override
-	public void remove(Product product) {
+	public void remove(ProductEntity product) {
 
 	}
 }
