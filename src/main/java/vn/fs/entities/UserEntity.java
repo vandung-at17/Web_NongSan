@@ -26,7 +26,7 @@ import javax.persistence.JoinColumn;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class User implements Serializable{
+public class UserEntity implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,14 +45,14 @@ public class User implements Serializable{
 		referencedColumnName = "userId"),
 		inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 
-	private Collection<Role> roles;
+	private Collection<RoleEntity> roles;
 
-	public User() {
+	public UserEntity() {
 		super();
 	}
 
-	public User(Long userId, String name, String email, String password, String avatar, Date registerDate,
-			Boolean status, Collection<Role> roles) {
+	public UserEntity(Long userId, String name, String email, String password, String avatar, Date registerDate,
+			Boolean status, Collection<RoleEntity> roles) {
 		super();
 		this.userId = userId;
 		this.name = name;
@@ -120,11 +120,11 @@ public class User implements Serializable{
 		this.status = status;
 	}
 
-	public Collection<Role> getRoles() {
+	public Collection<RoleEntity> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Collection<Role> roles) {
+	public void setRoles(Collection<RoleEntity> roles) {
 		this.roles = roles;
 	}
 

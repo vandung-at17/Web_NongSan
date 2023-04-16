@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Favorite;
 import vn.fs.entities.ProductEntity;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 
@@ -32,7 +32,7 @@ public class FavoriteController extends CommomController {
 	CommomDataService commomDataService;
 
 	@GetMapping(value = "/favorite")
-	public String favorite(Model model, User user) {
+	public String favorite(Model model, UserEntity user) {
 		List<Favorite> favorites = favoriteRepository.selectAllSaves(user.getUserId());
 		commomDataService.commonData(model, user);
 		model.addAttribute("favorites", favorites);
@@ -40,7 +40,7 @@ public class FavoriteController extends CommomController {
 	}
 
 	@GetMapping(value = "/doFavorite")
-	public String doFavorite(Model model, Favorite favorite, User user, @RequestParam("id") Long id) {
+	public String doFavorite(Model model, Favorite favorite, UserEntity user, @RequestParam("id") Long id) {
 		ProductEntity product = productRepository.findById(id).orElse(null);
 		favorite.setProduct(product);
 		favorite.setUser(user);
@@ -51,7 +51,7 @@ public class FavoriteController extends CommomController {
 	}
 
 	@GetMapping(value = "/doUnFavorite")
-	public String doUnFavorite(Model model, ProductEntity product, User user, @RequestParam("id") Long id) {
+	public String doUnFavorite(Model model, ProductEntity product, UserEntity user, @RequestParam("id") Long id) {
 		Favorite favorite = favoriteRepository.selectSaves(id, user.getUserId());
 		product = productRepository.findById(id).orElse(null);
 		product.setFavorite(false);

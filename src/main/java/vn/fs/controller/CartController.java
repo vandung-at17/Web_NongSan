@@ -31,7 +31,7 @@ import vn.fs.entities.CartItem;
 import vn.fs.entities.Order;
 import vn.fs.entities.OrderDetail;
 import vn.fs.entities.ProductEntity;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
 import vn.fs.service.PaypalService;
@@ -131,7 +131,7 @@ public class CartController extends CommomController {
 
 	// show check out
 	@GetMapping(value = "/checkout")
-	public String checkOut(Model model, User user) {
+	public String checkOut(Model model, UserEntity user) {
 
 		Order order = new Order();
 		model.addAttribute("order", order);
@@ -156,7 +156,7 @@ public class CartController extends CommomController {
 	// submit checkout
 	@PostMapping(value = "/checkout")
 	@Transactional
-	public String checkedOut(Model model, Order order, HttpServletRequest request, User user)
+	public String checkedOut(Model model, Order order, HttpServletRequest request, UserEntity user)
 			throws MessagingException {
 
 		String checkOut = request.getParameter("checkOut");
@@ -223,7 +223,7 @@ public class CartController extends CommomController {
 	// paypal
 	@GetMapping(URL_PAYPAL_SUCCESS)
 	public String successPay(@RequestParam("" + "" + "") String paymentId, @RequestParam("PayerID") String payerId,
-			HttpServletRequest request, User user, Model model) throws MessagingException {
+			HttpServletRequest request, UserEntity user, Model model) throws MessagingException {
 		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
 		model.addAttribute("cartItems", cartItems);
 		model.addAttribute("total", shoppingCartService.getAmount());
@@ -277,7 +277,7 @@ public class CartController extends CommomController {
 
 	// done checkout ship cod
 	@GetMapping(value = "/checkout_success")
-	public String checkoutSuccess(Model model, User user) {
+	public String checkoutSuccess(Model model, UserEntity user) {
 		commomDataService.commonData(model, user);
 
 		return "web/checkout_success";
@@ -286,7 +286,7 @@ public class CartController extends CommomController {
 
 	// done checkout paypal
 	@GetMapping(value = "/checkout_paypal_success")
-	public String paypalSuccess(Model model, User user) {
+	public String paypalSuccess(Model model, UserEntity user) {
 		commomDataService.commonData(model, user);
 
 		return "web/checkout_paypal_success";

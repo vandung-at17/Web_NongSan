@@ -40,7 +40,7 @@ public class CommentEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "userId")
-	private User user;
+	private UserEntity user;
 
 	@ManyToOne
 	@JoinColumn(name = "productId")

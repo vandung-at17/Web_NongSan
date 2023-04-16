@@ -21,7 +21,7 @@ import vn.fs.model.dto.OrderExcelExporter;
 import vn.fs.entities.Order;
 import vn.fs.entities.OrderDetail;
 import vn.fs.entities.ProductEntity;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
 import vn.fs.repository.ProductRepository;
@@ -56,10 +56,10 @@ public class OrderController {
 	UserRepository userRepository;
 
 	@ModelAttribute(value = "user")
-	public User user(Model model, Principal principal, User user) {
+	public UserEntity user(Model model, Principal principal, UserEntity user) {
 
 		if (principal != null) {
-			model.addAttribute("user", new User());
+			model.addAttribute("user", new UserEntity());
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}

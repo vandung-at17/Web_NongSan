@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import vn.fs.model.dto.CategoryDto;
 
 public interface ICategoryService {
-	List<CategoryDto> findAllCategoryOfPage(Pageable pageable);
+	public List<CategoryDto> findAllCategoryOfPage(Pageable pageable);
 	int getTotalItem();
+	int getTotalItem(String name);
+	public List<CategoryDto> findCategoryOfName(String name, Pageable pageable);
 }

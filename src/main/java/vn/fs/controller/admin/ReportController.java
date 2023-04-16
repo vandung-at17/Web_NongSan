@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import vn.fs.entities.OrderDetail;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.UserRepository;
 
@@ -31,7 +31,7 @@ public class ReportController {
 	// Statistics by product sold
 	@GetMapping(value = "/admin/reports")
 	public String report(Model model, Principal principal) throws SQLException {
-		User user = userRepository.findByEmail(principal.getName());
+		UserEntity user = userRepository.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetail orderDetail = new OrderDetail();
@@ -45,7 +45,7 @@ public class ReportController {
 	// Statistics by category sold
 	@RequestMapping(value = "/admin/reportCategory")
 	public String reportcategory(Model model, Principal principal) throws SQLException {
-		User user = userRepository.findByEmail(principal.getName());
+		UserEntity user = userRepository.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetail orderDetail = new OrderDetail();
@@ -59,7 +59,7 @@ public class ReportController {
 	// Statistics of products sold by year
 	@RequestMapping(value = "/admin/reportYear")
 	public String reportyear(Model model, Principal principal) throws SQLException {
-		User user = userRepository.findByEmail(principal.getName());
+		UserEntity user = userRepository.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetail orderDetail = new OrderDetail();
@@ -73,7 +73,7 @@ public class ReportController {
 	// Statistics of products sold by month
 	@RequestMapping(value = "/admin/reportMonth")
 	public String reportmonth(Model model, Principal principal) throws SQLException {
-		User user = userRepository.findByEmail(principal.getName());
+		UserEntity user = userRepository.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetail orderDetail = new OrderDetail();
@@ -87,7 +87,7 @@ public class ReportController {
 	// Statistics of products sold by quarter
 	@RequestMapping(value = "/admin/reportQuarter")
 	public String reportquarter(Model model, Principal principal) throws SQLException {
-		User user = userRepository.findByEmail(principal.getName());
+		UserEntity user = userRepository.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetail orderDetail = new OrderDetail();
@@ -101,7 +101,7 @@ public class ReportController {
 	// Statistics by user
 	@RequestMapping(value = "/admin/reportOrderCustomer")
 	public String reportordercustomer(Model model, Principal principal) throws SQLException {
-		User user = userRepository.findByEmail(principal.getName());
+		UserEntity user = userRepository.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetail orderDetail = new OrderDetail();

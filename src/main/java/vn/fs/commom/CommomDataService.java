@@ -18,7 +18,7 @@ import org.thymeleaf.context.Context;
 
 import vn.fs.entities.CartItem;
 import vn.fs.entities.Order;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.service.ShoppingCartService;
@@ -45,7 +45,7 @@ public class CommomDataService {
 	@Autowired
 	TemplateEngine templateEngine;
 
-	public void commonData(Model model, User user) {
+	public void commonData(Model model, UserEntity user) {
 		listCategoryByProductName(model);
 		Integer totalSave = 0;
 		// get count yêu thích

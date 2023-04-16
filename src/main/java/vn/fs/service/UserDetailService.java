@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import vn.fs.entities.Role;
-import vn.fs.entities.User;
+import vn.fs.entities.RoleEntity;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.UserRepository;
 
 /**
@@ -27,7 +27,7 @@ public class UserDetailService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		User user = userRepository.findByEmail(email);
+		UserEntity user = userRepository.findByEmail(email);
 		if (user == null) {
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
@@ -36,7 +36,7 @@ public class UserDetailService implements UserDetailsService {
 
 	}
 
-	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<RoleEntity> roles) {
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
 	}
 

@@ -32,16 +32,22 @@ public class ProductEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long productId;
+	
 	private String productName;
+	
 	private int quantity;
+	
 	private double price;
+	
 	private int discount;
+	
 	private String productImage;
+	
 	private String description;
 	@Temporal(TemporalType.DATE)
 	private Date enteredDate;
 	private Boolean status;
-	public boolean favorite;
+	public Boolean favorite;
 
 	@ManyToOne
 	@JoinColumn(name = "categoryId")

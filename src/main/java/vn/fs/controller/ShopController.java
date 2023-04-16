@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Favorite;
 import vn.fs.entities.ProductEntity;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 
@@ -43,7 +43,7 @@ public class ShopController extends CommomController {
 
 	@GetMapping(value = "/products")
 	public String shop(Model model, Pageable pageable, @RequestParam("page") Optional<Integer> page,
-			@RequestParam("size") Optional<Integer> size, User user) {
+			@RequestParam("size") Optional<Integer> size, UserEntity user) {
 
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(12);
@@ -87,7 +87,7 @@ public class ShopController extends CommomController {
 	@GetMapping(value = "/searchProduct")
 	public String showsearch(Model model, Pageable pageable, @RequestParam("keyword") String keyword,
 			@RequestParam("size") Optional<Integer> size, @RequestParam("page") Optional<Integer> page,
-			User user) {
+			UserEntity user) {
 	
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(12);
@@ -129,7 +129,7 @@ public class ShopController extends CommomController {
 	
 	// list books by category
 	@GetMapping(value = "/productByCategory")
-	public String listProductbyid(Model model, @RequestParam("id") Long id, User user) {
+	public String listProductbyid(Model model, @RequestParam("id") Long id, UserEntity user) {
 		List<ProductEntity> products = productRepository.listProductByCategory(id);
 
 		List<ProductEntity> listProductNew = new ArrayList<>();

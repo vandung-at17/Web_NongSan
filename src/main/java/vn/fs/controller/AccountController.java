@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import vn.fs.model.dto.ChangePassword;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.UserRepository;
 import vn.fs.service.SendMailService;
 
@@ -48,8 +48,8 @@ public class AccountController {
 
 	@PostMapping("/forgotPassword")
 	public ModelAndView forgotPassowrd(ModelMap model, @RequestParam("email") String email) {
-		List<User> listUser = userRepository.findAll();
-		for (User user : listUser) {
+		List<UserEntity> listUser = userRepository.findAll();
+		for (UserEntity user : listUser) {
 			if (email.trim().equals(user.getEmail())) {
 				session.removeAttribute("otp");
 				int random_otp = (int) Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);
@@ -100,7 +100,7 @@ public class AccountController {
 			model.addAttribute("email", email);
 			return new ModelAndView("/web/changePassword", model);
 		}
-		User user = userRepository.findByEmail(email);
+		UserEntity user = userRepository.findByEmail(email);
 		user.setStatus(true);
 		user.setPassword(bCryptPasswordEncoder.encode(newPassword));
 		userRepository.save(user);

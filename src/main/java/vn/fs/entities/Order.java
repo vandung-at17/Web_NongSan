@@ -46,6 +46,6 @@ public class Order implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "userId")
-	private User user;
+	private UserEntity user;
 
 }

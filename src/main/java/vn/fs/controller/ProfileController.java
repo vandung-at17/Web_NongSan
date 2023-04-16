@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Order;
 import vn.fs.entities.OrderDetail;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
 import vn.fs.repository.UserRepository;
@@ -49,12 +49,12 @@ public class ProfileController extends CommomController{
 	CommomDataService commomDataService;
 
 	@GetMapping(value = "/profile")
-	public String profile(Model model, Principal principal, User user, Pageable pageable,
+	public String profile(Model model, Principal principal, UserEntity user, Pageable pageable,
 			@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
 
 		if (principal != null) {
 
-			model.addAttribute("user", new User());
+			model.addAttribute("user", new UserEntity());
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}
@@ -76,7 +76,7 @@ public class ProfileController extends CommomController{
 		return "web/profile";
 	}
 
-	public Page<Order> findPaginated(Pageable pageable, User user) {
+	public Page<Order> findPaginated(Pageable pageable, UserEntity user) {
 
 		List<Order> orderPage = orderRepository.findOrderByUserId(user.getUserId());
 
@@ -98,11 +98,11 @@ public class ProfileController extends CommomController{
 	}
 	
 	@GetMapping("/order/detail/{order_id}")
-	public ModelAndView detail(Model model, Principal principal, User user, @PathVariable("order_id") Long id) {
+	public ModelAndView detail(Model model, Principal principal, UserEntity user, @PathVariable("order_id") Long id) {
 
 		if (principal != null) {
 
-			model.addAttribute("user", new User());
+			model.addAttribute("user", new UserEntity());
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}

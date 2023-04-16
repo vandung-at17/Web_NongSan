@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import vn.fs.entities.Role;
-import vn.fs.entities.User;
+import vn.fs.entities.RoleEntity;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.UserRepository;
 import vn.fs.service.SendMailService;
 
@@ -43,12 +43,12 @@ public class RegisterController {
 
 	@GetMapping("/register")
 	public ModelAndView registerForm(ModelMap model) {
-		model.addAttribute("user", new User());
+		model.addAttribute("user", new UserEntity());
 		return new ModelAndView("web/register", model);
 	}
 
 	@PostMapping("/register")
-	public String register(ModelMap model, @Validated @ModelAttribute("user") User dto, BindingResult result,
+	public String register(ModelMap model, @Validated @ModelAttribute("user") UserEntity dto, BindingResult result,
 			@RequestParam("password") String password) {
 		if (result.hasErrors()) {
 			return "web/register";
@@ -71,14 +71,14 @@ public class RegisterController {
 	}
 
 	@PostMapping("/confirmOtpRegister")
-	public ModelAndView confirmRegister(ModelMap model, @ModelAttribute("user") User dto,
+	public ModelAndView confirmRegister(ModelMap model, @ModelAttribute("user") UserEntity dto,
 			@RequestParam("password") String password, @RequestParam("otp") String otp) {
 		if (otp.equals(String.valueOf(session.getAttribute("otp")))) {
 			dto.setPassword(bCryptPasswordEncoder.encode(password));
 			dto.setRegisterDate(new Date());
 			dto.setStatus(true);
 			dto.setAvatar("user.png");
-			dto.setRoles(Arrays.asList(new Role("ROLE_USER")));
+			dto.setRoles(Arrays.asList(new RoleEntity("ROLE_USER")));
 			userRepository.save(dto);
 
 			session.removeAttribute("otp");
@@ -93,8 +93,8 @@ public class RegisterController {
 
 	// check email
 	public boolean checkEmail(String email) {
-		List<User> list = userRepository.findAll();
-		for (User c : list) {
+		List<UserEntity> list = userRepository.findAll();
+		for (UserEntity c : list) {
 			if (c.getEmail().equalsIgnoreCase(email)) {
 				return false;
 			}

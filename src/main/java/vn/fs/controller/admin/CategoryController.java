@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import vn.fs.entities.CategoryEntity;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.model.dto.CategoryDto;
 import vn.fs.model.response.PaginateResponse;
 import vn.fs.repository.CategoryRepository;
@@ -46,10 +46,10 @@ public class CategoryController {
 	private String message;
 	
 	@ModelAttribute(value = "user")
-	public User user(Model model, Principal principal, User user) {
+	public UserEntity user(Model model, Principal principal, UserEntity user) {
 
 		if (principal != null) {
-			model.addAttribute("user", new User());
+			model.addAttribute("user", new UserEntity());
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}

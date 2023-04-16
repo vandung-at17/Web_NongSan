@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import vn.fs.entities.CategoryEntity;
 import vn.fs.entities.ProductEntity;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.repository.UserRepository;
@@ -54,10 +54,9 @@ public class ProductController{
 	UserRepository userRepository;
 	
 	@ModelAttribute(value = "user")
-	public User user(Model model, Principal principal, User user) {
-
+	public UserEntity user(Model model, Principal principal, UserEntity user) {
 		if (principal != null) {
-			model.addAttribute("user", new User());
+			model.addAttribute("user", new UserEntity());
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}
@@ -72,19 +71,13 @@ public class ProductController{
 	}
 
 	// show list product - table list
-	@ModelAttribute("products")
-	public List<ProductEntity> showProduct(Model model) {
-		List<ProductEntity> products = productRepository.findAll();
-		model.addAttribute("products", products);
-
-		return products;
-	}
-
+	// Hiển thị list và phân trang sản phẩm
 	@GetMapping(value = "/products")
 	public String products(Model model, Principal principal) {
 		ProductEntity product = new ProductEntity();
 		model.addAttribute("product", product);
-
+		List<ProductEntity> products = productRepository.findAll();
+		model.addAttribute("products", products);
 		return "admin/products";
 	}
 

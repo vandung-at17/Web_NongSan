@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import vn.fs.commom.CommomDataService;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 
 /**
  * @author DongTHD
@@ -19,7 +19,7 @@ public class AboutController extends CommomController {
 	CommomDataService commomDataService;
 
 	@GetMapping(value = "/aboutUs")
-	public String about(Model model, User user) {
+	public String about(Model model, UserEntity user) {
 
 		commomDataService.commonData(model, user);
 		return "web/about";

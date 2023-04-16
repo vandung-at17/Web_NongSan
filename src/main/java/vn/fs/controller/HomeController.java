@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Favorite;
 import vn.fs.entities.ProductEntity;
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 
@@ -34,7 +34,7 @@ public class HomeController extends CommomController {
 	FavoriteRepository favoriteRepository;
 
 	@GetMapping(value = "/")
-	public String home(Model model, User user) {
+	public String home(Model model, UserEntity user) {
 
 		commomDataService.commonData(model, user);
 		bestSaleProduct20(model, user);
@@ -50,7 +50,7 @@ public class HomeController extends CommomController {
 	}
 	
 	// Top 20 best sale.
-	public void bestSaleProduct20(Model model, User customer) {
+	public void bestSaleProduct20(Model model, UserEntity customer) {
 		List<Object[]> productList = productRepository.bestSaleProduct20();
 		if (productList != null) {
 			ArrayList<Integer> listIdProductArrayList = new ArrayList<>();

@@ -6,9 +6,7 @@
 	<title>Greeny - Trang quản trị</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<link rel="icon" href="/assets/img/icon.ico" type="image/x-icon"/>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
+	
 	<!-- Fonts and icons -->
 	<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
 	<script>
@@ -121,26 +119,30 @@
 									<div class="row">
 										<div class="col-sm-12 col-md-6">
 											<div class="dataTables_length" id="add-row_length">
-												<label>Show: <select name="add-row_length" aria-controls="add-row" class="form-control form-control-sm">
+												<label>Show: 
+													<select name="add-row_length" aria-controls="add-row" class="form-control form-control-sm" id="combobox" onchange="limit(this)">
 													<option value="5">5</option>
 													<option value="10">10</option>
 													<option value="25">25</option>
 													<option value="50">50</option>
-													<option value="100">100</option></select> entries
+													<option value="100">100</option>
+													</select> entries
 												</label>
 											</div>
 										</div>
 										<div class="col-sm-12 col-md-6">
 											<div id="add-row_filter" class="dataTables_filter">
-												<label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="add-row"></label>
+												<label>Search:
+												<input id="search" type="search" oninput="searchByName(this)" class="form-control form-control-sm" placeholder="Nhập giá trị tìm kiếm" aria-controls="add-row">
+												</label>
 											</div>
 										</div>
 									</div>
 									<table id="add-row" class="display table table-striped table-hover" >
 										<thead>
 											<tr>
-												<th>ID</th>
-												<th>Name</th>
+												<th style="width: 20%">ID</th>
+												<th style="width: 70%">Name</th>
 												<th style="width: 10%">Action</th>
 											</tr>
 										</thead>
@@ -151,7 +153,7 @@
 												<th>Action</th>
 											</tr>
 										</tfoot>
-										<tbody>
+										<tbody id="table-category">
 											<tr th:each="item : ${categories}">
 												<td>[[${item.categoryId}]]</td>
 												<td>[[${item.categoryName}]]</td>
@@ -181,12 +183,16 @@
 													<li class="paginate_button page-item previous disabled" id="add-row_previous">
 														<a href="#" aria-controls="add-row" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
 													</li>
-													<li class="paginate_button page-item active">
-														<a href="#" aria-controls="add-row" data-dt-idx="1" tabindex="0" class="page-link">1</a>
-													</li>
-													<li class="paginate_button page-item ">
-														<a href="#" aria-controls="add-row" data-dt-idx="2" tabindex="0" class="page-link">2</a>
-													</li>
+													<ul class="pagination" id = "pagination">
+													<th:block th:each="item: ${#numbers.sequence(1, paginate.totalPage)}">	
+														<li th:if="${item} == ${paginate.page}" class="paginate_button page-item active">
+															<a aria-controls="add-row" data-dt-idx=item.index tabindex="0" class="page-link" th:text="${item}"></a>
+														</li>
+														<li th:unless="${item} == ${paginate.page}" class="paginate_button page-item">
+															<a aria-controls="add-row" data-dt-idx="${item}" tabindex="0" class="page-link" th:text="${item}"></a>
+														</li>
+													</th:block>
+													</ul>
 													<li class="paginate_button page-item next" id="add-row_next">
 														<a href="#" aria-controls="add-row" data-dt-idx="3" tabindex="0" class="page-link">Next</a>
 													</li>
@@ -346,8 +352,68 @@
 		});
 		$("body").on("click",".page-link",function(){
 			var currentPage=$(this).text();
-			alert($(this).text());
-		})
+			var limit = document.getElementById("combobox").value;
+			var key =document.getElementById("search").value;
+			$.ajax({
+				url:"/api/categories",
+				type:"GET",
+				data:{
+					currentPage : currentPage,
+					limit : limit,
+					key : key  
+				},
+				success: function (result){
+					var t = $("#table-category");
+					var c = $("#pagination");
+					t.empty();
+					t.append(result.body);
+					c.empty();
+					c.append(result.pagination);
+				}
+			})
+		});
+		function limit(obj)
+        {
+			var limit = obj.value;
+			$.ajax({
+				url:"/api/categories",
+				type:"GET",
+				data:{
+					currentPage : 1,
+					limit : limit
+				},
+				success: function (result){
+					var t = $("#table-category");
+					var c = $("#pagination");
+					t.empty();
+					t.append(result.body);
+					c.empty();
+					c.append(result.pagination);
+				}
+			})
+        }
+		function searchByName(param)
+		{
+			var limit = document.getElementById("combobox").value;
+			var key = param.value;
+			$.ajax({
+				url:"/api/searchcategories",
+				type:"GET",
+				data:{
+					limit : limit,
+					key : key
+				},
+				success: function (result){
+					var t = $("#table-category");
+					var c = $("#pagination");
+					t.empty();
+					t.append(result.body);
+					c.empty();
+					c.append(result.pagination);
+				}
+			}) 
+		}
+		fun
 	</script>
 </body>
 </html>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -40,4 +41,23 @@ public class CategoryService implements ICategoryService{
 		return totalItem;
 	}
 
+	@Override
+	public int getTotalItem(String name) {
+		// TODO Auto-generated method stub
+		int totalItem = categoryRepository.getTotalItem(name);
+		return totalItem;
+	}
+
+	@Override
+	public List<CategoryDto> findCategoryOfName(String name, Pageable pageable) {
+		// TODO Auto-generated method stub
+		List<CategoryDto> categoryDtos = new ArrayList<>();
+		Page<CategoryEntity> page= categoryRepository.findByName(name,pageable);
+		List<CategoryEntity> categoryEntities = page.getContent();
+		for (CategoryEntity categoryEntity : categoryEntities) {
+			CategoryDto categoryDto = categoryConverter.toDto(categoryEntity);
+			categoryDtos.add(categoryDto);
+		}
+		return categoryDtos;
+	}
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import vn.fs.entities.User;
+import vn.fs.entities.UserEntity;
 import vn.fs.repository.UserRepository;
 
 /**
@@ -24,10 +24,10 @@ public class IndexAdminController{
 	UserRepository userRepository;
 	
 	@ModelAttribute(value = "user")
-	public User user(Model model, Principal principal, User user) {
+	public UserEntity user(Model model, Principal principal, UserEntity user) {
 
 		if (principal != null) {
-			model.addAttribute("user", new User());
+			model.addAttribute("user", new UserEntity());
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}
