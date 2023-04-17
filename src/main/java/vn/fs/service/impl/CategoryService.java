@@ -60,4 +60,16 @@ public class CategoryService implements ICategoryService{
 		}
 		return categoryDtos;
 	}
+
+	@Override
+	public List<CategoryDto> findAllCategory() {
+		// TODO Auto-generated method stub
+		List<CategoryDto> categoryDtos = new ArrayList<>();
+		List<CategoryEntity> categoryEntities = categoryRepository.findAll();
+		for (CategoryEntity categoryEntity : categoryEntities) {
+			CategoryDto categoryDto = categoryConverter.toDto(categoryEntity);
+			categoryDtos.add(categoryDto);
+		}
+		return categoryDtos;
+	}
 }

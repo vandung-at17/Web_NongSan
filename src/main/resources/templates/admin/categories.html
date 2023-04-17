@@ -375,12 +375,14 @@
 		function limit(obj)
         {
 			var limit = obj.value;
+			var key =document.getElementById("search").value;
 			$.ajax({
 				url:"/api/categories",
 				type:"GET",
 				data:{
 					currentPage : 1,
-					limit : limit
+					limit : limit ,
+					key : key
 				},
 				success: function (result){
 					var t = $("#table-category");
@@ -391,7 +393,7 @@
 					c.append(result.pagination);
 				}
 			})
-        }
+        };
 		function searchByName(param)
 		{
 			var limit = document.getElementById("combobox").value;
@@ -412,8 +414,7 @@
 					c.append(result.pagination);
 				}
 			}) 
-		}
-		fun
+		};
 	</script>
 </body>
 </html>

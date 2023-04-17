@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -29,9 +31,14 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.fs.entities.CategoryEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.CategoryDto;
+import vn.fs.model.dto.ProductDto;
+import vn.fs.model.response.PaginateResponse;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.repository.UserRepository;
+import vn.fs.service.ICategoryService;
+import vn.fs.service.IProductService;
 
 /**
  * @author DongTHD
@@ -43,9 +50,16 @@ public class ProductController{
 	
 	@Value("${upload.path}")
 	private String pathUploadImage;
+	//Vị trí lưu file là :"/upload/images"
+	
+	@Autowired
+	private IProductService productService;
 
 	@Autowired
 	ProductRepository productRepository;
+	
+	@Autowired
+	private ICategoryService categoryService;
 
 	@Autowired
 	CategoryRepository categoryRepository;
@@ -60,7 +74,6 @@ public class ProductController{
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}
-
 		return user;
 	}
 
@@ -74,10 +87,16 @@ public class ProductController{
 	// Hiển thị list và phân trang sản phẩm
 	@GetMapping(value = "/products")
 	public String products(Model model, Principal principal) {
-		ProductEntity product = new ProductEntity();
-		model.addAttribute("product", product);
-		List<ProductEntity> products = productRepository.findAll();
+		model.addAttribute("product", new ProductEntity());
+		int currentPage = 1;
+		int limit = 5;
+		Pageable pageable = PageRequest.of(currentPage-1, limit);
+		List<ProductDto> products = productService.findAllProductOfPage(pageable);
+		PaginateResponse paginateResponse = new PaginateResponse();
+		paginateResponse.setTotalPage((int) Math.ceil((double) productService.getTotalItem()/limit));
+		paginateResponse.setPage(currentPage);
 		model.addAttribute("products", products);
+		model.addAttribute("paginate", paginateResponse);
 		return "admin/products";
 	}
 
@@ -95,10 +114,11 @@ public class ProductController{
 		} catch (IOException e) {
 
 		}
-
+		product.setStatus(true);
+		product.setFavorite(false);
 		product.setProductImage(file.getOriginalFilename());
-		ProductEntity p = productRepository.save(product);
-		if (null != p) {
+		product = productRepository.save(product);
+		if (null != product) {
 			model.addAttribute("message", "Update success");
 			model.addAttribute("product", product);
 		} else {
@@ -111,10 +131,9 @@ public class ProductController{
 	// show select option ở add product
 	// Hiển thị các thể loại sản phẩm
 	@ModelAttribute("categoryList")
-	public List<CategoryEntity> showCategory(Model model) {
-		List<CategoryEntity> categoryList = categoryRepository.findAll();
+	public List<CategoryDto> showCategory(Model model) {
+		List<CategoryDto> categoryList = categoryService.findAllCategory();
 		model.addAttribute("categoryList", categoryList);
-
 		return categoryList;
 	}
 	

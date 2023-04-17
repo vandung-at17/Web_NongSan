@@ -23,10 +23,36 @@ public class ProductService implements IProductService{
 	private ProductConverter productConverter;
 	
 	@Override
-	public List<ProductDto> findProductPage(Pageable pageable) {
+	public List<ProductDto> findAllProductOfPage(Pageable pageable) {
 		// TODO Auto-generated method stub
 		List<ProductDto> productDtos = new ArrayList<>();
 		List<ProductEntity> productEntities = productRepository.findAll(pageable).getContent();
+		for (ProductEntity productEntity : productEntities) {
+			ProductDto productDto = productConverter.toDto(productEntity);
+			productDtos.add(productDto);
+		}
+		return productDtos;
+	}
+
+	@Override
+	public int getTotalItem() {
+		// TODO Auto-generated method stub
+		int totalItem = productRepository.getTotalItem();
+		return totalItem;
+	}
+
+	@Override
+	public int getTotalItem(String name) {
+		// TODO Auto-generated method stub
+		int totalItem = productRepository.getTotalItem(name);
+		return totalItem;
+	}
+
+	@Override
+	public List<ProductDto> findProductOfName(String name, Pageable pageable) {
+		// TODO Auto-generated method stub
+		List<ProductDto> productDtos = new ArrayList<>();
+		List<ProductEntity> productEntities = productRepository.findByName(name, pageable).getContent();
 		for (ProductEntity productEntity : productEntities) {
 			ProductDto productDto = productConverter.toDto(productEntity);
 			productDtos.add(productDto);

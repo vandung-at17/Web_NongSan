@@ -47,6 +47,7 @@ public class ProductEntity implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date enteredDate;
 	private Boolean status;
+	
 	public Boolean favorite;
 
 	@ManyToOne

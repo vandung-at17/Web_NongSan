@@ -25,13 +25,15 @@ public class CategoryAPI {
 	@GetMapping(value = "/categories")
 	public PageLayOut getCategoryOfPage(@RequestParam int currentPage, @RequestParam int limit, @RequestParam(value="key", required = false) String key) {
 		Pageable pageable = PageRequest.of(currentPage-1, limit);
-		PaginateResponse paginateResponse = new PaginateResponse();
-		paginateResponse.setTotalPage((int) Math.ceil((double) categoryService.getTotalItem() /limit));
-		paginateResponse.setPage(currentPage);
 		List<CategoryDto> categoryDtos = new ArrayList<>();
+		PaginateResponse paginateResponse = new PaginateResponse();
 		if (key == null|| key.isEmpty()) {
+			paginateResponse.setTotalPage((int) Math.ceil((double) categoryService.getTotalItem() /limit));
+			paginateResponse.setPage(currentPage);
 			categoryDtos = categoryService.findAllCategoryOfPage(pageable);
-		}else {
+		}else {			
+			paginateResponse.setTotalPage((int) Math.ceil((double) categoryService.getTotalItem(key) /limit));
+			paginateResponse.setPage(currentPage);
 			categoryDtos = categoryService.findCategoryOfName(key, pageable);
 		}
 		PageLayOut pageLayOut = new PageLayOut();

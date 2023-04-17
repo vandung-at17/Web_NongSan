@@ -53,7 +53,6 @@ public class CategoryController {
 			user = userRepository.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}
-
 		return user;
 	}
 
@@ -74,7 +73,6 @@ public class CategoryController {
 		int currentPage = 1;
 		int limit = 5;
 		Pageable pageable = PageRequest.of(currentPage-1, limit);	
-		List<CategoryDto> categoryDtos = categoryService.findAllCategoryOfPage(pageable);
 		model.addAttribute("categories", categoryService.findAllCategoryOfPage(pageable));
 		PaginateResponse paginateResponse = new PaginateResponse();
 		paginateResponse.setTotalPage((int) Math.ceil((double) categoryService.getTotalItem() /limit));

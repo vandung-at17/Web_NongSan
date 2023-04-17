@@ -54,7 +54,7 @@
 							<i class="flaticon-right-arrow"></i>
 						</li>
 						<li class="nav-item">
-							<a href="#">Trang chủ</a>
+							<a th:href="@{/admin/home}">Trang chủ</a>
 						</li>
 						<li class="separator">
 							<i class="flaticon-right-arrow"></i>
@@ -160,65 +160,115 @@
 								</div>
 
 								<div class="table-responsive">
-									<table id="add-row" class="display table table-striped table-hover" >
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Ảnh</th>
-												<th>Tên sản phẩm</th>
-												<th>Thể loại</th>
-												<th>Đơn giá</th>
-												<th>Giảm giá</th>
-												<th>Số lượng</th>
-												<th>Ngày thêm</th>
-												<th>Mô tả sản phẩm</th>
-												<th style="width: 10%">Hành động</th>
-											</tr>
-										</thead>
-										<tfoot>
-											<tr>
-												<th>ID</th>
-												<th>Ảnh</th>
-												<th>Tên sản phẩm</th>
-												<th>Thể loại</th>
-												<th>Đơn giá</th>
-												<th>Giảm giá</th>
-												<th>Số lượng</th>
-												<th>Ngày thêm</th>
-												<th>Mô tả sản phẩm</th>
-												<th>Hành động</th>
-											</tr>
-										</tfoot>
-										<tbody>
-											<tr th:each="item : ${products}">
-												<td>[[${item?.productId}]]</td>
-												<td>
-													<img th:src="@{'/loadImage?imageName='+${item.productImage}}" width="80px" alt="product" />
-												</td>
-												<td>[[${item.productName}]]</td>
-												<td>[[${item.category.categoryName}]]</td>
-												<td th:text="${#numbers.formatDecimal(item.price, 1, 'DEFAULT', 0, 'DEFAULT')}+' đ'"></td>
-												<td>[[${#numbers.formatDecimal(item?.discount, 1, 'DEFAULT', 0, 'DEFAULT')}+' %']]</td>
-												<td>[[${item.quantity}]]</td>
-												<td>[[${item.enteredDate}]]</td>
-												<td>[[${item.description}]]</td>
-												<td>
-													<div class="form-button-action">
-														<a th:href="@{/admin/editProduct/{productId}(productId=${item.productId})}"
-															type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Chỉnh sửa">
-															<i class="fa fa-edit"></i>
-														</a>
-														<button th:data-id="${item.productId}" th:data-name="${item.productName}"
-																onclick="showConfigModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"
-																type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Xóa">
-															<i class="fa fa-times"></i>
-														</button>
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-									
+									<div id="add-row_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+										<div class="row">
+										    <div class="col-sm-12 col-md-6">
+												<div class="dataTables_length" id="add-row_length">
+													<label>Show: 
+														<select name="add-row_length" aria-controls="add-row" class="form-control form-control-sm" id="combobox" onchange="limit(this)">
+														<option value="5">5</option>
+														<option value="10">10</option>
+														<option value="25">25</option>
+														<option value="50">50</option>
+														<option value="100">100</option>
+														</select> entries
+													</label>
+												</div>
+											</div>
+											<div class="col-sm-12 col-md-6">
+												<div id="add-row_filter" class="dataTables_filter">
+													<label>Search:
+													<input id="search" type="search" oninput="searchByName(this)" class="form-control form-control-sm" placeholder="Nhập giá trị tìm kiếm" aria-controls="add-row">
+													</label>
+												</div>
+											</div>
+										</div>
+										<table id="add-row" class="display table table-striped table-hover" >
+											<thead>
+												<tr>
+													<!-- <th>ID</th> -->
+													<th style="width: 15%">Ảnh</th>
+													<th style="width: 10%">Tên sản phẩm</th>
+													<th style="width: 5%">Thể loại</th>
+													<th style="width: 6%">Đơn giá</th>
+													<th style="width: 5%">Giảm giá</th>
+													<th style="width: 5%">Số lượng</th>
+													<th style="width: 10%">Ngày thêm</th>
+													<th style="width: 34%">Mô tả sản phẩm</th>
+													<th style="width: 10%">Hành động</th>
+												</tr>
+											</thead>
+											<tfoot>
+												<tr>
+													<!-- <th>ID</th> -->
+													<th>Ảnh</th>
+													<th>Tên sản phẩm</th>
+													<th>Thể loại</th>
+													<th>Đơn giá</th>
+													<th>Giảm giá</th>
+													<th>Số lượng</th>
+													<th>Ngày thêm</th>
+													<th>Mô tả sản phẩm</th>
+													<th>Hành động</th>
+												</tr>
+											</tfoot>
+											<tbody id="table-product">
+												<tr th:each="item : ${products}">
+													<!-- <td>[[${item?.productId}]]</td> -->
+													<td>
+														<img th:src="@{'/loadImage?imageName='+${item.productImage}}" width="80px" alt="product"/>
+													</td>
+													<td>[[${item.productName}]]</td>
+													<td>[[${item.category.categoryName}]]</td>
+													<td th:text="${#numbers.formatDecimal(item.price, 1, 'DEFAULT', 0, 'DEFAULT')}+' đ'"></td>
+													<td>[[${#numbers.formatDecimal(item?.discount, 1, 'DEFAULT', 0, 'DEFAULT')}+' %']]</td>
+													<td>[[${item.quantity}]]</td>
+													<td>[[${item.enteredDate}]]</td>
+													<td>[[${item.description}]]</td>
+													<td>
+														<div class="form-button-action">
+															<a th:href="@{/admin/editProduct/{productId}(productId=${item.productId})}"
+																type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Chỉnh sửa">
+																<i class="fa fa-edit"></i>
+															</a>
+															<button th:data-id="${item.productId}" th:data-name="${item.productName}"
+																	onclick="showConfigModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"
+																	type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Xóa">
+																<i class="fa fa-times"></i>
+															</button>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<div class="row">
+										<div class="col-sm-12 col-md-5">
+											<div class="dataTables_info" id="add-row_info" role="status" aria-live="polite">Showing 1 to 5 of 6 entries</div>
+										</div>
+										<div class="col-sm-12 col-md-7">
+											<div class="dataTables_paginate paging_simple_numbers" id="add-row_paginate">
+												<ul class="pagination">
+													<li class="paginate_button page-item previous disabled" id="add-row_previous">
+														<a href="#" aria-controls="add-row" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+													</li>
+													<ul class="pagination" id = "paginationproducts">
+													<th:block th:each="item: ${#numbers.sequence(1, paginate.totalPage)}">	
+														<li th:if="${item} == ${paginate.page}" class="paginate_button page-item active">
+															<a aria-controls="add-row" data-dt-idx=item.index tabindex="0" class="page-link" th:text="${item}"></a>
+														</li>
+														<li th:unless="${item} == ${paginate.page}" class="paginate_button page-item">
+															<a aria-controls="add-row" data-dt-idx="${item}" tabindex="0" class="page-link" th:text="${item}"></a>
+														</li>
+													</th:block>
+													</ul>
+													<li class="paginate_button page-item next" id="add-row_next">
+														<a href="#" aria-controls="add-row" data-dt-idx="3" tabindex="0" class="page-link">Next</a>
+													</li>
+												</ul>
+											</div>
+										</div>
+										</div>
+									</div>
 									<script>
 									function showConfigModalDialog(id, name) {
 										$('#name').text(name);
@@ -255,32 +305,11 @@
 					</div>
 				</div>
 			</div>
-		<footer class="footer">
-			<div class="container-fluid">
-				<nav class="pull-left">
-					<ul class="nav">
-						<li class="nav-item">
-							<a class="nav-link" href="javascript:void(0);">
-								GREENY-SHOP
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="javascript:void(0);">
-								Help
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="javascript:void(0);">
-								Licenses
-							</a>
-						</li>
-					</ul>
-				</nav>
-				<div class="copyright ml-auto">
-					2021, made with <i class="fa fa-heart heart text-danger"></i> by <a href="javascript:void(0);">GREENY-SHOP</a>
-				</div>				
-			</div>
-		</footer>
+		<!-- Footer -->
+	
+		<th:block th:replace="~{admin/fragments/footer :: footer}"></th:block>
+	
+		<!-- End Footer -->	
 	</div>
 		
 	</div>
@@ -330,9 +359,9 @@
 			});
 
 			// Add Row
-			$('#add-row').DataTable({
+			/* $('#add-row').DataTable({
 				"pageLength": 5,
-			});
+			}); */
 
 			var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
@@ -347,6 +376,71 @@
 
 			}); */
 		});
+		$("body").on("click",".page-link",function(){
+			var currentPage=$(this).text();
+			var limit = document.getElementById("combobox").value;
+			var key =document.getElementById("search").value;
+			$.ajax({
+				url:"/api/products",
+				type:"GET",
+				data:{
+					currentPage : currentPage,
+					limit : limit,
+					key : key
+				},
+				success: function (result){
+					var t = $("#table-product");
+					var c = $("#paginationproducts");
+					t.empty();
+					t.append(result.body);
+					c.empty();
+					c.append(result.pagination);
+				}
+			})
+		});
+		function limit(obj)
+        {
+			var limit = obj.value;
+			var key =document.getElementById("search").value;
+			$.ajax({
+				url:"/api/products",
+				type:"GET",
+				data:{
+					currentPage : 1,
+					limit : limit,
+					key : key
+				},
+				success: function (result){
+					var t = $("#table-product");
+					var c = $("#paginationproducts");
+					t.empty();
+					t.append(result.body);
+					c.empty();
+					c.append(result.pagination);
+				}
+			})
+        };
+		function searchByName(param)
+		{
+			var limit = document.getElementById("combobox").value;
+			var key = param.value;
+			$.ajax({
+				url:"/api/searchproducts",
+				type:"GET",
+				data:{
+					limit : limit,
+					key : key
+				},
+				success: function (result){
+					var t = $("#table-product");
+					var c = $("#paginationproducts");
+					t.empty();
+					t.append(result.body);
+					c.empty();
+					c.append(result.pagination);
+				}
+			}) 
+		}
 	</script>
 </body>
 </html>

@@ -7,5 +7,9 @@ import org.springframework.data.domain.Pageable;
 import vn.fs.model.dto.ProductDto;
 
 public interface IProductService {
-	List<ProductDto> findProductPage (Pageable pageable);
+	public List<ProductDto> findAllProductOfPage (Pageable pageable);
+	public int getTotalItem();
+	public int getTotalItem(String name);
+	public List<ProductDto> findProductOfName(String name, Pageable pageable);
+	/*public ProductDto */
 }
