@@ -12,4 +12,7 @@ public interface ICategoryService {
 	int getTotalItem(String name);
 	public List<CategoryDto> findCategoryOfName(String name, Pageable pageable);
 	public List<CategoryDto> findAllCategory();
+	public CategoryDto getByID(Long id);
+	public CategoryDto insert (CategoryDto categoryDto);
+	public CategoryDto delete (CategoryDto categoryDto);
 }

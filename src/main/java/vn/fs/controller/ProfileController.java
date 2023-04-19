@@ -23,7 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.Order;
-import vn.fs.entities.OrderDetail;
+import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
@@ -107,7 +107,7 @@ public class ProfileController extends CommomController{
 			model.addAttribute("user", user);
 		}
 		
-		List<OrderDetail> listO = orderDetailRepository.findByOrderId(id);
+		List<OrderDetailEntity> listO = orderDetailRepository.findByOrderId(id);
 
 //		model.addAttribute("amount", orderRepository.findById(id).get().getAmount());
 		model.addAttribute("orderDetail", listO);

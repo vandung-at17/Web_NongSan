@@ -1,23 +1,38 @@
 package vn.fs.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import vn.fs.converter.ProductConverter;
+import vn.fs.entities.CategoryEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.model.dto.ProductDto;
+import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.service.IProductService;
 
 @Service
 public class ProductService implements IProductService{
 	
+	@Value("${upload.path}")
+	private String pathUploadImage;
+	//Vị trí lưu file là :"/upload/images"
+	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	@Autowired
 	private ProductConverter productConverter;
@@ -58,6 +73,39 @@ public class ProductService implements IProductService{
 			productDtos.add(productDto);
 		}
 		return productDtos;
+	}
+
+	@Override
+	public ProductDto findById(Long id) {
+		// TODO Auto-generated method stub
+		ProductEntity productEntity = productRepository.findById(id).orElse(null);
+		ProductDto productDto = productConverter.toDto(productEntity);
+		return productDto;
+	}
+
+	@Override
+	@Transactional
+	public ProductDto insert(ProductDto productDto, MultipartFile file) {
+		try {
+			File convFile = new File(pathUploadImage + "/" + file.getOriginalFilename());
+			FileOutputStream fos = new FileOutputStream(convFile);
+			fos.write(file.getBytes());
+			fos.close();
+		}catch (IOException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		// TODO Auto-generated method stub
+		ProductEntity productEntity = productConverter.toEntity(productDto);
+		CategoryEntity categoryEntity = categoryRepository.getById(productDto.getCategory().getCategoryId());
+		productEntity.setProductImage(file.getOriginalFilename());
+		productEntity.setCategory(categoryEntity);
+		productEntity.setFavorite(false);
+		productEntity.setStatus(true);
+		productEntity = productRepository.save(productEntity);
+		productDto = productConverter.toDto(productEntity);
+		return productDto;
 	}
 	
 }

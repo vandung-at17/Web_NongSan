@@ -22,4 +22,20 @@ public class ProductConverter {
 		productDto.setCategory(productEntity.getCategory());
 		return productDto;
 	}
+	
+	public ProductEntity toEntity (ProductDto productDto) {
+		ProductEntity productEntity = new ProductEntity();
+		productEntity.setProductId(productDto.getProductId());
+		productEntity.setProductName(productDto.getProductName());
+		productEntity.setQuantity(productDto.getQuantity());
+		productEntity.setPrice(productDto.getPrice());
+		productEntity.setDiscount(productDto.getDiscount());
+		productEntity.setProductImage(productDto.getProductImage());
+		productEntity.setDescription(productDto.getDescription());
+		productEntity.setEnteredDate(productDto.getEnteredDate());
+		productEntity.setStatus(productDto.getStatus());
+		productEntity.setFavorite(productDto.getFavorite());
+		productEntity.setCategory(productEntity.getCategory());
+		return productEntity;
+	}
 }

@@ -48,6 +48,6 @@ public class CommentEntity implements Serializable {
 
 	@OneToOne
 	@JoinColumn(name = "orderDetailId")
-	private OrderDetail orderDetail;
+	private OrderDetailEntity orderDetail;
 
 }

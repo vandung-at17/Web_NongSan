@@ -187,7 +187,7 @@
 											<thead>
 												<tr>
 													<!-- <th>ID</th> -->
-													<th style="width: 15%">Ảnh</th>
+													<th style="width: 10%">Ảnh</th>
 													<th style="width: 10%">Tên sản phẩm</th>
 													<th style="width: 5%">Thể loại</th>
 													<th style="width: 6%">Đơn giá</th>
@@ -195,7 +195,8 @@
 													<th style="width: 5%">Số lượng</th>
 													<th style="width: 10%">Ngày thêm</th>
 													<th style="width: 34%">Mô tả sản phẩm</th>
-													<th style="width: 10%">Hành động</th>
+													<th style="width: 3%">STATUS</th>
+													<th style="width: 12%">Hành động</th>
 												</tr>
 											</thead>
 											<tfoot>
@@ -209,6 +210,7 @@
 													<th>Số lượng</th>
 													<th>Ngày thêm</th>
 													<th>Mô tả sản phẩm</th>
+													<th>Status</th>
 													<th>Hành động</th>
 												</tr>
 											</tfoot>
@@ -225,6 +227,7 @@
 													<td>[[${item.quantity}]]</td>
 													<td>[[${item.enteredDate}]]</td>
 													<td>[[${item.description}]]</td>
+													<td>[[${item.status}]]</td>
 													<td>
 														<div class="form-button-action">
 															<a th:href="@{/admin/editProduct/{productId}(productId=${item.productId})}"

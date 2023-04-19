@@ -19,6 +19,6 @@ public class ProductDto {
 	private String description;
 	private Date enteredDate;
 	private Boolean status;
-	private boolean favorite;
+	private Boolean favorite;
 	private CategoryEntity category;
 }

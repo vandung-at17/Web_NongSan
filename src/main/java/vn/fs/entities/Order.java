@@ -42,7 +42,7 @@ public class Order implements Serializable {
 	private int status;
 
 	@OneToMany(mappedBy = "order")
-	private List<OrderDetail> orderDetails;
+	private List<OrderDetailEntity> orderDetails;
 
 	@ManyToOne
 	@JoinColumn(name = "userId")

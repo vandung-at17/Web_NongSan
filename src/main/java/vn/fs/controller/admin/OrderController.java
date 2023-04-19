@@ -19,15 +19,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import vn.fs.model.dto.OrderExcelExporter;
 import vn.fs.entities.Order;
-import vn.fs.entities.OrderDetail;
+import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.repository.UserRepository;
-import vn.fs.service.OrderDetailService;
+
 import vn.fs.service.SendMailService;
+import vn.fs.service.impl.OrderDetailService;
+
 
 /**
  * @author DongTHD
@@ -80,7 +82,7 @@ public class OrderController {
 	@GetMapping("/order/detail/{order_id}")
 	public ModelAndView detail(ModelMap model, @PathVariable("order_id") Long id) {
 
-		List<OrderDetail> listO = orderDetailRepository.findByOrderId(id);
+		List<OrderDetailEntity> listO = orderDetailRepository.findByOrderId(id);
 
 		model.addAttribute("amount", orderRepository.findById(id).get().getAmount());
 		model.addAttribute("orderDetail", listO);
@@ -127,8 +129,8 @@ public class OrderController {
 			orderRepository.save(oReal);
 
 			ProductEntity p = null;
-			List<OrderDetail> listDe = orderDetailRepository.findByOrderId(id);
-			for (OrderDetail od : listDe) {
+			List<OrderDetailEntity> listDe = orderDetailRepository.findByOrderId(id);
+			for (OrderDetailEntity od : listDe) {
 				p = od.getProduct();
 				p.setQuantity(p.getQuantity() - od.getQuantity());
 				productRepository.save(p);

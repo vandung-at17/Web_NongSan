@@ -41,7 +41,8 @@ public class CategoryAPI {
 		for (CategoryDto categoryDto : categoryDtos) {
 			tbody+="<tr>\n" + 
 				   "<td>"+categoryDto.getCategoryId()+"</td>\n" + 
-				   "<td>"+categoryDto.getCategoryName()+"</td>\r\n" + 
+				   "<td>"+categoryDto.getCategoryName()+"</td>\r\n" +
+				   "<td>"+categoryDto.getStatus()+"</td>\r\n" + 
 				   "<td>\n" + 
 				   "<div class='form-button-action'>\n" + 
 				   "<a href='/admin/editCategory/"+categoryDto.getCategoryId()+"' type='button' data-toggle='tooltip' title='' class='btn btn-link btn-primary btn-lg' data-original-title='Chỉnh sửa'>\n" + 
@@ -83,7 +84,8 @@ public class CategoryAPI {
 		for (CategoryDto categoryDto : categoryDtos) {
 			 body+="<tr>\n" + 
 			"<td>"+categoryDto.getCategoryId()+"</td>\n" + 
-			"<td>"+categoryDto.getCategoryName()+"</td>\r\n" + 
+			"<td>"+categoryDto.getCategoryName()+"</td>\r\n" +
+			"<td>"+categoryDto.getStatus()+"</td>\r\n" +
 			"<td>\n" + 
 			"<div class='form-button-action'>\n" + 
 			"<a href='/admin/editCategory/"+categoryDto.getCategoryId()+"' type='button' data-toggle='tooltip' title class='btn btn-link btn-primary btn-lg' data-original-title='Chỉnh sửa'>\n" + 

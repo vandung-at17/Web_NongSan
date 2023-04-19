@@ -29,7 +29,7 @@ import vn.fs.config.PaypalPaymentIntent;
 import vn.fs.config.PaypalPaymentMethod;
 import vn.fs.entities.CartItem;
 import vn.fs.entities.Order;
-import vn.fs.entities.OrderDetail;
+import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
@@ -200,7 +200,7 @@ public class CartController extends CommomController {
 		orderRepository.save(order);
 
 		for (CartItem cartItem : cartItems) {
-			OrderDetail orderDetail = new OrderDetail();
+			OrderDetailEntity orderDetail = new OrderDetailEntity();
 			orderDetail.setQuantity(cartItem.getQuantity());
 			orderDetail.setOrder(order);
 			orderDetail.setProduct(cartItem.getProduct());
@@ -250,7 +250,7 @@ public class CartController extends CommomController {
 				orderRepository.save(orderFinal);
 
 				for (CartItem cartItem : cartItems) {
-					OrderDetail orderDetail = new OrderDetail();
+					OrderDetailEntity orderDetail = new OrderDetailEntity();
 					orderDetail.setQuantity(cartItem.getQuantity());
 					orderDetail.setOrder(orderFinal);
 					orderDetail.setProduct(cartItem.getProduct());

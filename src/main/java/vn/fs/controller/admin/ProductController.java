@@ -1,8 +1,5 @@
 package vn.fs.controller.admin;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import vn.fs.entities.CategoryEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
 import vn.fs.model.dto.CategoryDto;
@@ -67,6 +63,8 @@ public class ProductController{
 	@Autowired
 	UserRepository userRepository;
 	
+	private String message;
+	
 	@ModelAttribute(value = "user")
 	public UserEntity user(Model model, Principal principal, UserEntity user) {
 		if (principal != null) {
@@ -102,28 +100,36 @@ public class ProductController{
 
 	// add product
 	@PostMapping(value = "/addProduct")
-	public String addProduct(@ModelAttribute("product") ProductEntity product, ModelMap model,
+	public String addProduct(@ModelAttribute("product") ProductDto productDto , ModelMap model,
 			@RequestParam("file") MultipartFile file, HttpServletRequest httpServletRequest) {
 
-		try {
-
-			File convFile = new File(pathUploadImage + "/" + file.getOriginalFilename());
-			FileOutputStream fos = new FileOutputStream(convFile);
-			fos.write(file.getBytes());
-			fos.close();
-		} catch (IOException e) {
-
-		}
-		product.setStatus(true);
-		product.setFavorite(false);
-		product.setProductImage(file.getOriginalFilename());
-		product = productRepository.save(product);
-		if (null != product) {
+//		try {
+//
+//			File convFile = new File(pathUploadImage + "/" + file.getOriginalFilename());
+//			FileOutputStream fos = new FileOutputStream(convFile);
+//			fos.write(file.getBytes());
+//			fos.close();
+//		} catch (IOException e) {
+//
+//		}
+//		product.setStatus(true);
+//		product.setFavorite(false);
+//		product.setProductImage(file.getOriginalFilename());
+//		product = productRepository.save(product);
+//		if (null != product) {
+//			model.addAttribute("message", "Update success");
+//			model.addAttribute("product", product);
+//		} else {
+//			model.addAttribute("message", "Update failure");
+//			model.addAttribute("product", product);
+//		}
+		ProductDto dto = productService.insert(productDto, file);
+		if (null != dto) {
 			model.addAttribute("message", "Update success");
-			model.addAttribute("product", product);
+			model.addAttribute("product", dto);
 		} else {
 			model.addAttribute("message", "Update failure");
-			model.addAttribute("product", product);
+			model.addAttribute("product", dto);
 		}
 		return "redirect:/admin/products";
 	}
@@ -138,11 +144,12 @@ public class ProductController{
 	}
 	
 	// get Edit brand
+	// Chuyển đến giao diện trang edit
 	@GetMapping(value = "/editProduct/{id}")
 	public String editCategory(@PathVariable("id") Long id, ModelMap model) {
-		ProductEntity product = productRepository.findById(id).orElse(null);
+		ProductDto productDto = productService.findById(id);
 		
-		model.addAttribute("product", product);
+		model.addAttribute("product", productDto);
 
 		return "admin/editProduct";
 	}

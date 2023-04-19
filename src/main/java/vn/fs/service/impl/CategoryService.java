@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vn.fs.converter.CategoryConverter;
 import vn.fs.entities.CategoryEntity;
@@ -71,5 +72,35 @@ public class CategoryService implements ICategoryService{
 			categoryDtos.add(categoryDto);
 		}
 		return categoryDtos;
+	}
+
+	@Override
+	public CategoryDto getByID(Long id) {
+		// TODO Auto-generated method stub
+		CategoryEntity categoryEntity = categoryRepository.getById(id);
+		CategoryDto categoryDto = categoryConverter.toDto(categoryEntity);
+		return categoryDto;
+	}
+
+	@Override
+	@Transactional
+	public CategoryDto insert(CategoryDto categoryDto) {
+		// TODO Auto-generated method stub
+		CategoryEntity categoryEntity = categoryConverter.toEntity(categoryDto);
+		categoryEntity.setStatus(true);
+		categoryEntity = categoryRepository.save(categoryEntity);
+		categoryDto = categoryConverter.toDto(categoryEntity);
+		return categoryDto;
+	}
+
+	@Override
+	@Transactional
+	public CategoryDto delete(CategoryDto categoryDto) {
+		// TODO Auto-generated method stub
+		CategoryEntity categoryEntity = categoryConverter.toEntity(categoryDto);
+		categoryEntity.setStatus(false);
+		categoryEntity = categoryRepository.save(categoryEntity);
+		categoryDto = categoryConverter.toDto(categoryEntity);
+		return categoryDto;
 	}
 }

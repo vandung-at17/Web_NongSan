@@ -1,7 +1,6 @@
 package vn.fs.controller.admin;
 
 import java.security.Principal;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -78,12 +77,16 @@ public class CategoryController {
 		paginateResponse.setTotalPage((int) Math.ceil((double) categoryService.getTotalItem() /limit));
 		paginateResponse.setPage(currentPage);
 		model.addAttribute("paginate", paginateResponse);
+		if(message != null && !message.isEmpty()) {
+			model.addAttribute("message", message);
+			message = null;
+		}
 		return "admin/categories";
 	}
 
 	// add category
 	@PostMapping(value = "/addCategory")
-	public String addCategory(@Validated @ModelAttribute("category") CategoryEntity category, ModelMap model,
+	public String addCategory(@Validated @ModelAttribute("category") CategoryDto categoryDto, ModelMap model,
 			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
@@ -91,9 +94,11 @@ public class CategoryController {
 
 			return "admin/categories";
 		}
-
-		categoryRepository.save(category);
-		model.addAttribute("message", "successful!");
+		categoryDto = categoryService.insert(categoryDto);
+		if (null != categoryDto) {
+			message = "successful!";
+		}
+		
 
 		return "redirect:/admin/categories";
 	}
@@ -111,8 +116,15 @@ public class CategoryController {
 	// delete category
 	@GetMapping("/delete/{id}")
 	public String delCategory(@PathVariable("id") Long id, Model model) {
-		categoryRepository.deleteById(id);
-		message = "Delete successful!";
+//		categoryRepository.deleteById(id);
+//		message = "Delete successful!";
+		CategoryDto categoryDto = categoryService.getByID(id);
+		if (categoryDto != null) {
+			categoryDto = categoryService.delete(categoryDto);
+		}
+		if (null != categoryDto) {
+			message = "Delete successful!";
+		}
 		model.addAttribute("message", message);
 
 		return "redirect:/admin/categories";

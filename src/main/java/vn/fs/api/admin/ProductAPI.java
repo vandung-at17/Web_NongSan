@@ -1,6 +1,5 @@
 package vn.fs.api.admin;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +91,7 @@ public class ProductAPI {
 		PaginateResponse paginateResponse = new PaginateResponse();
 		paginateResponse.setTotalPage((int) Math.ceil((double) productService.getTotalItem(key)/limit));
 		paginateResponse.setPage(1);
-		List<ProductDto> productDtos = new ArrayList<>();
-		productDtos = productService.findProductOfName(key, pageable);
+		List<ProductDto> productDtos = productService.findProductOfName(key, pageable);
 		PageLayOut pageLayOut = new PageLayOut();
 		String tbody="";
 		for (ProductDto productDto : productDtos) {
