@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import vn.fs.commom.CommomDataService;
-import vn.fs.entities.Order;
+import vn.fs.entities.OrderEntity;
 import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.UserEntity;
 import vn.fs.repository.OrderDetailRepository;
@@ -62,7 +62,7 @@ public class ProfileController extends CommomController{
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(6);
 
-		Page<Order> orderPage = findPaginated(PageRequest.of(currentPage - 1, pageSize), user);
+		Page<OrderEntity> orderPage = findPaginated(PageRequest.of(currentPage - 1, pageSize), user);
 
 		int totalPages = orderPage.getTotalPages();
 		if (totalPages > 0) {
@@ -76,14 +76,14 @@ public class ProfileController extends CommomController{
 		return "web/profile";
 	}
 
-	public Page<Order> findPaginated(Pageable pageable, UserEntity user) {
+	public Page<OrderEntity> findPaginated(Pageable pageable, UserEntity user) {
 
-		List<Order> orderPage = orderRepository.findOrderByUserId(user.getUserId());
+		List<OrderEntity> orderPage = orderRepository.findOrderByUserId(user.getUserId());
 
 		int pageSize = pageable.getPageSize();
 		int currentPage = pageable.getPageNumber();
 		int startItem = currentPage * pageSize;
-		List<Order> list;
+		List<OrderEntity> list;
 
 		if (orderPage.size() < startItem) {
 			list = Collections.emptyList();
@@ -92,7 +92,7 @@ public class ProfileController extends CommomController{
 			list = orderPage.subList(startItem, toIndex);
 		}
 
-		Page<Order> orderPages = new PageImpl<Order>(list, PageRequest.of(currentPage, pageSize), orderPage.size());
+		Page<OrderEntity> orderPages = new PageImpl<OrderEntity>(list, PageRequest.of(currentPage, pageSize), orderPage.size());
 
 		return orderPages;
 	}
@@ -121,9 +121,9 @@ public class ProfileController extends CommomController{
 	
 	@RequestMapping("/order/cancel/{order_id}")
 	public ModelAndView cancel(ModelMap model, @PathVariable("order_id") Long id) {
-		Optional<Order> o = orderRepository.findById(id);
+		Optional<OrderEntity> o = orderRepository.findById(id);
 		if (o.isPresent()) {
-			Order oReal = o.get();
+			OrderEntity oReal = o.get();
 			oReal.setStatus((short) 3);
 			orderRepository.save(oReal);
 

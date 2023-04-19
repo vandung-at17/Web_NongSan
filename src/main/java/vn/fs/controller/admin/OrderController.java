@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import vn.fs.model.dto.OrderExcelExporter;
-import vn.fs.entities.Order;
+import vn.fs.entities.OrderEntity;
 import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
@@ -73,7 +73,7 @@ public class OrderController {
 	@GetMapping(value = "/orders")
 	public String orders(Model model, Principal principal) {
 
-		List<Order> orderDetails = orderRepository.findAll();
+		List<OrderEntity> orderDetails = orderRepository.findAll();
 		model.addAttribute("orderDetails", orderDetails);
 
 		return "admin/orders";
@@ -94,9 +94,9 @@ public class OrderController {
 
 	@RequestMapping("/order/cancel/{order_id}")
 	public ModelAndView cancel(ModelMap model, @PathVariable("order_id") Long id) {
-		Optional<Order> o = orderRepository.findById(id);
+		Optional<OrderEntity> o = orderRepository.findById(id);
 		if (o.isPresent()) {
-			Order oReal = o.get();
+			OrderEntity oReal = o.get();
 			oReal.setStatus((short) 3);
 			orderRepository.save(oReal);
 
@@ -109,9 +109,9 @@ public class OrderController {
 
 	@RequestMapping("/order/confirm/{order_id}")
 	public ModelAndView confirm(ModelMap model, @PathVariable("order_id") Long id) {
-		Optional<Order> o = orderRepository.findById(id);
+		Optional<OrderEntity> o = orderRepository.findById(id);
 		if (o.isPresent()) {
-			Order oReal = o.get();
+			OrderEntity oReal = o.get();
 			oReal.setStatus((short) 1);
 			orderRepository.save(oReal);
 
@@ -122,9 +122,9 @@ public class OrderController {
 
 	@RequestMapping("/order/delivered/{order_id}")
 	public ModelAndView delivered(ModelMap model, @PathVariable("order_id") Long id) {
-		Optional<Order> o = orderRepository.findById(id);
+		Optional<OrderEntity> o = orderRepository.findById(id);
 		if (o.isPresent()) {
-			Order oReal = o.get();
+			OrderEntity oReal = o.get();
 			oReal.setStatus((short) 2);
 			orderRepository.save(oReal);
 
@@ -153,7 +153,7 @@ public class OrderController {
 
 		response.setHeader(headerKey, headerValue);
 
-		List<Order> lisOrders = orderDetailService.listAll();
+		List<OrderEntity> lisOrders = orderDetailService.listAll();
 
 		OrderExcelExporter excelExporter = new OrderExcelExporter(lisOrders);
 		excelExporter.export(response);

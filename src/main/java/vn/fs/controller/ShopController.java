@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.fs.commom.CommomDataService;
-import vn.fs.entities.Favorite;
+import vn.fs.converter.UserConverter;
+import vn.fs.entities.FavoriteEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 
@@ -39,12 +41,15 @@ public class ShopController extends CommomController {
 	FavoriteRepository favoriteRepository;
 	
 	@Autowired
+	private UserConverter userConverter;
+	
+	@Autowired
 	CommomDataService commomDataService;
 
 	@GetMapping(value = "/products")
 	public String shop(Model model, Pageable pageable, @RequestParam("page") Optional<Integer> page,
 			@RequestParam("size") Optional<Integer> size, UserEntity user) {
-
+//		UserEntity user = userConverter.toEntity(userDto);
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(12);
 
@@ -140,7 +145,7 @@ public class ShopController extends CommomController {
 
 			BeanUtils.copyProperties(product, productEntity);
 
-			Favorite save = favoriteRepository.selectSaves(productEntity.getProductId(), user.getUserId());
+			FavoriteEntity save = favoriteRepository.selectSaves(productEntity.getProductId(), user.getUserId());
 
 			if (save != null) {
 				productEntity.favorite = true;

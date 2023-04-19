@@ -17,6 +17,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.JoinColumn;
 
 /**
@@ -24,6 +27,8 @@ import javax.persistence.JoinColumn;
  *
  */
 @SuppressWarnings("serial")
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class UserEntity implements Serializable{
@@ -44,25 +49,7 @@ public class UserEntity implements Serializable{
 		joinColumns = @JoinColumn(name = "user_id",
 		referencedColumnName = "userId"),
 		inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-
 	private Collection<RoleEntity> roles;
-
-	public UserEntity() {
-		super();
-	}
-
-	public UserEntity(Long userId, String name, String email, String password, String avatar, Date registerDate,
-			Boolean status, Collection<RoleEntity> roles) {
-		super();
-		this.userId = userId;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.avatar = avatar;
-		this.registerDate = registerDate;
-		this.status = status;
-		this.roles = roles;
-	}
 
 	public Long getUserId() {
 		return userId;

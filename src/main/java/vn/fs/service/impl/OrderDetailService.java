@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import vn.fs.entities.Order;
+import vn.fs.entities.OrderEntity;
 import vn.fs.model.response.StatisticalOrderDetailOfProduct;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
@@ -27,8 +27,8 @@ public class OrderDetailService implements IOrderDetailService {
 	@Autowired
 	private OrderDetailRepository orderDetailRepository;
 
-	public List<Order> listAll() {
-		return (List<Order>) repo.findAll();
+	public List<OrderEntity> listAll() {
+		return (List<OrderEntity>) repo.findAll();
 	}
 
 	@Override

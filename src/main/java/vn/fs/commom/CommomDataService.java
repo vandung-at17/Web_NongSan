@@ -17,7 +17,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import vn.fs.entities.CartItem;
-import vn.fs.entities.Order;
+import vn.fs.entities.OrderEntity;
 import vn.fs.entities.UserEntity;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
@@ -73,7 +73,7 @@ public class CommomDataService {
 	
 	//sendEmail by order success
 	public void sendSimpleEmail(String email, String subject, String contentEmail, Collection<CartItem> cartItems,
-			double totalPrice, Order orderFinal) throws MessagingException {
+			double totalPrice, OrderEntity orderFinal) throws MessagingException {
 		Locale locale = LocaleContextHolder.getLocale();
 
 		// Prepare the evaluation context

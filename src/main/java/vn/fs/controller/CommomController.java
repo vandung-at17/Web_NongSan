@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import vn.fs.entities.CategoryEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.repository.UserRepository;
+import vn.fs.service.IUserService;
 
 /**
  * @author DongTHD
@@ -26,20 +28,22 @@ public class CommomController {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	private IUserService userService;
 
 	@Autowired
 	ProductRepository productRepository;
 
 	@ModelAttribute(value = "user")
-	public UserEntity user(Model model, Principal principal, UserEntity user) {
+	public UserEntity user(Model model, Principal principal, UserEntity userEntity) {
 
 		if (principal != null) {
-			model.addAttribute("user", new UserEntity());
-			user = userRepository.findByEmail(principal.getName());
-			model.addAttribute("user", user);
+			model.addAttribute("userEntity", new UserEntity());
+			userEntity = userRepository.findByEmail(principal.getName());
+			model.addAttribute("userEntity", userEntity);
 		}
-
-		return user;
+		return userEntity;
 	}
 
 	@ModelAttribute("categoryList")

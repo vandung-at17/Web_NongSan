@@ -28,7 +28,7 @@ import vn.fs.commom.CommomDataService;
 import vn.fs.config.PaypalPaymentIntent;
 import vn.fs.config.PaypalPaymentMethod;
 import vn.fs.entities.CartItem;
-import vn.fs.entities.Order;
+import vn.fs.entities.OrderEntity;
 import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
@@ -63,7 +63,7 @@ public class CartController extends CommomController {
 	@Autowired
 	OrderDetailRepository orderDetailRepository;
 
-	public Order orderFinal = new Order();
+	public OrderEntity orderFinal = new OrderEntity();
 
 	public static final String URL_PAYPAL_SUCCESS = "pay/success";
 	public static final String URL_PAYPAL_CANCEL = "pay/cancel";
@@ -133,7 +133,7 @@ public class CartController extends CommomController {
 	@GetMapping(value = "/checkout")
 	public String checkOut(Model model, UserEntity user) {
 
-		Order order = new Order();
+		OrderEntity order = new OrderEntity();
 		model.addAttribute("order", order);
 
 		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
@@ -156,7 +156,7 @@ public class CartController extends CommomController {
 	// submit checkout
 	@PostMapping(value = "/checkout")
 	@Transactional
-	public String checkedOut(Model model, Order order, HttpServletRequest request, UserEntity user)
+	public String checkedOut(Model model, OrderEntity order, HttpServletRequest request, UserEntity userEntity)
 			throws MessagingException {
 
 		String checkOut = request.getParameter("checkOut");
@@ -195,7 +195,7 @@ public class CartController extends CommomController {
 		order.setStatus(0);
 		order.getOrderId();
 		order.setAmount(totalPrice);
-		order.setUser(user);
+		order.setUser(userEntity);
 
 		orderRepository.save(order);
 
@@ -210,7 +210,7 @@ public class CartController extends CommomController {
 		}
 
 		// sendMail
-		commomDataService.sendSimpleEmail(user.getEmail(), "Greeny-Shop Xác Nhận Đơn hàng", "aaaa", cartItems,
+		commomDataService.sendSimpleEmail(userEntity.getEmail(), "Greeny-Shop Xác Nhận Đơn hàng", "aaaa", cartItems,
 				totalPrice, order);
 
 		shoppingCartService.clear();
@@ -266,7 +266,7 @@ public class CartController extends CommomController {
 				shoppingCartService.clear();
 				session.removeAttribute("cartItems");
 				model.addAttribute("orderId", orderFinal.getOrderId());
-				orderFinal = new Order();
+				orderFinal = new OrderEntity();
 				return "redirect:/checkout_paypal_success";
 			}
 		} catch (PayPalRESTException e) {
