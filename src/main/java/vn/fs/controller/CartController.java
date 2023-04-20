@@ -32,6 +32,7 @@ import vn.fs.entities.OrderEntity;
 import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
 import vn.fs.service.PaypalService;
@@ -131,7 +132,7 @@ public class CartController extends CommomController {
 
 	// show check out
 	@GetMapping(value = "/checkout")
-	public String checkOut(Model model, UserEntity user) {
+	public String checkOut(Model model, UserDto userDto) {
 
 		OrderEntity order = new OrderEntity();
 		model.addAttribute("order", order);
@@ -148,7 +149,7 @@ public class CartController extends CommomController {
 
 		model.addAttribute("totalPrice", totalPrice);
 		model.addAttribute("totalCartItems", shoppingCartService.getCount());
-		commomDataService.commonData(model, user);
+		commomDataService.commonData(model, userDto);
 
 		return "web/shoppingCart_checkout";
 	}
@@ -277,8 +278,8 @@ public class CartController extends CommomController {
 
 	// done checkout ship cod
 	@GetMapping(value = "/checkout_success")
-	public String checkoutSuccess(Model model, UserEntity user) {
-		commomDataService.commonData(model, user);
+	public String checkoutSuccess(Model model, UserDto userDto) {
+		commomDataService.commonData(model, userDto);
 
 		return "web/checkout_success";
 
@@ -286,8 +287,8 @@ public class CartController extends CommomController {
 
 	// done checkout paypal
 	@GetMapping(value = "/checkout_paypal_success")
-	public String paypalSuccess(Model model, UserEntity user) {
-		commomDataService.commonData(model, user);
+	public String paypalSuccess(Model model, UserDto userDto) {
+		commomDataService.commonData(model, userDto);
 
 		return "web/checkout_paypal_success";
 

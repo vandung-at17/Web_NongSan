@@ -23,9 +23,12 @@ import vn.fs.converter.UserConverter;
 import vn.fs.entities.FavoriteEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.ProductDto;
 import vn.fs.model.dto.UserDto;
+import vn.fs.model.response.PaginateResponse;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
+import vn.fs.service.IProductService;
 
 /**
  * @author DongTHD
@@ -38,6 +41,9 @@ public class ShopController extends CommomController {
 	ProductRepository productRepository;
 	
 	@Autowired
+	private IProductService productService;
+	
+	@Autowired
 	FavoriteRepository favoriteRepository;
 	
 	@Autowired
@@ -46,24 +52,43 @@ public class ShopController extends CommomController {
 	@Autowired
 	CommomDataService commomDataService;
 
+	//Hiển thị danh sách sản phẩm có phân trang
+//	@GetMapping(value = "/products")
+//	public String shop(Model model, Pageable pageable, @RequestParam("page") Optional<Integer> page,
+//			@RequestParam("size") Optional<Integer> size, UserEntity user) {
+////		UserEntity user = userConverter.toEntity(userDto);
+//		int currentPage = page.orElse(1);// Set currentPage = 1;
+//		int pageSize = size.orElse(12);  //Số lượng Item trên một trang (Limit)
+//		// Mặc định limit = 12
+//		Page<ProductEntity> productPage = findPaginated(PageRequest.of(currentPage - 1, pageSize));
+//
+//		int totalPages = productPage.getTotalPages();
+//		if (totalPages > 0) {
+//			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+//			model.addAttribute("pageNumbers", pageNumbers);
+//		}
+//
+//		commomDataService.commonData(model, user);
+//		model.addAttribute("products", productPage);
+//
+//		return "web/shop";
+//	}
+	
 	@GetMapping(value = "/products")
-	public String shop(Model model, Pageable pageable, @RequestParam("page") Optional<Integer> page,
-			@RequestParam("size") Optional<Integer> size, UserEntity user) {
+	public String shop(Model model, @RequestParam("page") Optional<Integer> page,
+			@RequestParam("size") Optional<Integer> size, UserDto userDto) {
 //		UserEntity user = userConverter.toEntity(userDto);
-		int currentPage = page.orElse(1);
-		int pageSize = size.orElse(12);
-
-		Page<ProductEntity> productPage = findPaginated(PageRequest.of(currentPage - 1, pageSize));
-
-		int totalPages = productPage.getTotalPages();
-		if (totalPages > 0) {
-			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
-			model.addAttribute("pageNumbers", pageNumbers);
-		}
-
-		commomDataService.commonData(model, user);
-		model.addAttribute("products", productPage);
-
+		int currentPage = page.orElse(1);// Set currentPage = 1;
+		int pageSize = size.orElse(12);  //Số lượng Item trên một trang (Limit)
+		// Mặc định limit = 12
+		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		List<ProductDto> productDtosPage = productService.findAllProductOfPage(pageable);
+		PaginateResponse paginateResponse = new PaginateResponse();
+		paginateResponse.setTotalPage((int) Math.ceil((double) productService.getTotalItem()/currentPage));
+		paginateResponse.setPage(currentPage);
+		model.addAttribute("pageNumbers", paginateResponse);
+		commomDataService.commonData(model, userDto);
+		model.addAttribute("products", productDtosPage);
 		return "web/shop";
 	}
 
@@ -89,24 +114,43 @@ public class ShopController extends CommomController {
 	}
 	
 	// search product
-	@GetMapping(value = "/searchProduct")
-	public String showsearch(Model model, Pageable pageable, @RequestParam("keyword") String keyword,
-			@RequestParam("size") Optional<Integer> size, @RequestParam("page") Optional<Integer> page,
-			UserEntity user) {
 	
-		int currentPage = page.orElse(1);
-		int pageSize = size.orElse(12);
-
-		Page<ProductEntity> productPage = findPaginatSearch(PageRequest.of(currentPage - 1, pageSize), keyword);
-
-		int totalPages = productPage.getTotalPages();
-		if (totalPages > 0) {
-			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
-			model.addAttribute("pageNumbers", pageNumbers);
-		}
-
-		commomDataService.commonData(model, user);
-		model.addAttribute("products", productPage);
+//	@GetMapping(value = "/searchProduct")
+//	public String showsearch(Model model, Pageable pageable, @RequestParam("keyword") String keyword,
+//			@RequestParam("size") Optional<Integer> size, @RequestParam("page") Optional<Integer> page,
+//			UserEntity user) {
+//	
+//		int currentPage = page.orElse(1);
+//		int pageSize = size.orElse(12);
+//
+//		Page<ProductEntity> productPage = findPaginatSearch(PageRequest.of(currentPage - 1, pageSize), keyword);
+//
+//		int totalPages = productPage.getTotalPages();
+//		if (totalPages > 0) {
+//			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+//			model.addAttribute("pageNumbers", pageNumbers);
+//		}
+//
+//		commomDataService.commonData(model, user);
+//		model.addAttribute("products", productPage);
+//		return "web/shop";
+//	}
+	
+	// Tìm kiếm Product
+	@GetMapping(value = "/searchProduct")
+	public String showsearch(Model model, @RequestParam("keyword") String keyword,
+			@RequestParam("size") Optional<Integer> size, @RequestParam("page") Optional<Integer> page,
+			UserDto userDto) {
+		int currentPage = page.orElse(1); // set currentPage =1
+		int pageSize = size.orElse(12); // set limit = 12
+		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		List<ProductDto> productDtosPage = productService.findProductOfName(keyword, pageable);
+		PaginateResponse paginateResponse = new PaginateResponse();
+		paginateResponse.setTotalPage((int) Math.ceil((double) productService.getTotalItem(keyword)/pageSize));
+		paginateResponse.setPage(currentPage);
+		model.addAttribute("pageNumbers", paginateResponse);
+		commomDataService.commonData(model, userDto);
+		model.addAttribute("products", productDtosPage);
 		return "web/shop";
 	}
 	
@@ -134,7 +178,7 @@ public class ShopController extends CommomController {
 	
 	// list books by category
 	@GetMapping(value = "/productByCategory")
-	public String listProductbyid(Model model, @RequestParam("id") Long id, UserEntity user) {
+	public String listProductbyid(Model model, @RequestParam("id") Long id, UserDto userDto) {
 		List<ProductEntity> products = productRepository.listProductByCategory(id);
 
 		List<ProductEntity> listProductNew = new ArrayList<>();
@@ -145,7 +189,7 @@ public class ShopController extends CommomController {
 
 			BeanUtils.copyProperties(product, productEntity);
 
-			FavoriteEntity save = favoriteRepository.selectSaves(productEntity.getProductId(), user.getUserId());
+			FavoriteEntity save = favoriteRepository.selectSaves(productEntity.getProductId(), userDto.getUserId());
 
 			if (save != null) {
 				productEntity.favorite = true;
@@ -157,7 +201,7 @@ public class ShopController extends CommomController {
 		}
 
 		model.addAttribute("products", listProductNew);
-		commomDataService.commonData(model, user);
+		commomDataService.commonData(model, userDto);
 		return "web/shop";
 	}
 

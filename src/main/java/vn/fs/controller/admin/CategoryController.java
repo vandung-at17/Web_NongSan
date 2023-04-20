@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import vn.fs.entities.CategoryEntity;
 import vn.fs.entities.UserEntity;
 import vn.fs.model.dto.CategoryDto;
+import vn.fs.model.dto.UserDto;
 import vn.fs.model.response.PaginateResponse;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.UserRepository;
 import vn.fs.service.ICategoryService;
+import vn.fs.service.IUserService;
 
 
 /**
@@ -42,14 +44,17 @@ public class CategoryController {
 	@Autowired
 	UserRepository userRepository;
 	
+	@Autowired
+	private IUserService userService;
+	
 	private String message;
 	
 	@ModelAttribute(value = "user")
-	public UserEntity user(Model model, Principal principal, UserEntity user) {
+	public UserDto user(Model model, Principal principal, UserDto user) {
 
 		if (principal != null) {
 			model.addAttribute("user", new UserEntity());
-			user = userRepository.findByEmail(principal.getName());
+			user = userService.findByEmail(principal.getName());
 			model.addAttribute("user", user);
 		}
 		return user;

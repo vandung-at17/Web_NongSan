@@ -14,6 +14,7 @@ import vn.fs.entities.RoleEntity;
 public class UserDto {
 	private Long userId;
 	private String name;
+	private String email;//gmail
 	private String password;
 	private String avatar;
 	private Date registerDate;

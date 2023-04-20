@@ -36,14 +36,14 @@ public class CommomController {
 	ProductRepository productRepository;
 
 	@ModelAttribute(value = "user")
-	public UserEntity user(Model model, Principal principal, UserEntity userEntity) {
+	public UserDto user(Model model, Principal principal, UserDto userDto) {
 
 		if (principal != null) {
-			model.addAttribute("userEntity", new UserEntity());
-			userEntity = userRepository.findByEmail(principal.getName());
-			model.addAttribute("userEntity", userEntity);
+			model.addAttribute("userDto", new UserDto());
+			userDto = userService.findByEmail(principal.getName());
+			model.addAttribute("userDto", userDto);
 		}
-		return userEntity;
+		return userDto;
 	}
 
 	@ModelAttribute("categoryList")

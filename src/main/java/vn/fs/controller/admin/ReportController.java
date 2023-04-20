@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import vn.fs.entities.OrderDetailEntity;
-import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.model.response.PaginateResponse;
 import vn.fs.model.response.StatisticalOrderDetailOfProduct;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.UserRepository;
 import vn.fs.service.IOrderDetailService;
+import vn.fs.service.IUserService;
 
 /**
  * @author DongTHD
@@ -35,12 +36,15 @@ public class ReportController {
 	
 	@Autowired
 	private IOrderDetailService orderDetailService;
+	
+	@Autowired
+	private IUserService userService;
 
 	// Statistics by product sold
 	// Thống kê từ các sản phẩm đã bám được
 	@GetMapping(value = "/admin/reports")
 	public String report(Model model, Principal principal) throws SQLException {
-		UserEntity user = userRepository.findByEmail(principal.getName());
+		UserDto user = userService.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		int currentPage = 1;
@@ -58,7 +62,7 @@ public class ReportController {
 	// Statistics by category sold
 	@RequestMapping(value = "/admin/reportCategory")
 	public String reportcategory(Model model, Principal principal) throws SQLException {
-		UserEntity user = userRepository.findByEmail(principal.getName());
+		UserDto user = userService.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetailEntity orderDetail = new OrderDetailEntity();
@@ -71,7 +75,7 @@ public class ReportController {
 	// Statistics of products sold by year
 	@RequestMapping(value = "/admin/reportYear")
 	public String reportyear(Model model, Principal principal) throws SQLException {
-		UserEntity user = userRepository.findByEmail(principal.getName());
+		UserDto user = userService.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetailEntity orderDetail = new OrderDetailEntity();
@@ -85,7 +89,7 @@ public class ReportController {
 	// Statistics of products sold by month
 	@RequestMapping(value = "/admin/reportMonth")
 	public String reportmonth(Model model, Principal principal) throws SQLException {
-		UserEntity user = userRepository.findByEmail(principal.getName());
+		UserDto user = userService.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetailEntity orderDetail = new OrderDetailEntity();
@@ -99,7 +103,7 @@ public class ReportController {
 	// Statistics of products sold by quarter
 	@RequestMapping(value = "/admin/reportQuarter")
 	public String reportquarter(Model model, Principal principal) throws SQLException {
-		UserEntity user = userRepository.findByEmail(principal.getName());
+		UserDto user = userService.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetailEntity orderDetail = new OrderDetailEntity();
@@ -113,7 +117,7 @@ public class ReportController {
 	// Statistics by user
 	@RequestMapping(value = "/admin/reportOrderCustomer")
 	public String reportordercustomer(Model model, Principal principal) throws SQLException {
-		UserEntity user = userRepository.findByEmail(principal.getName());
+		UserDto user = userService.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
 		OrderDetailEntity orderDetail = new OrderDetailEntity();
@@ -123,7 +127,4 @@ public class ReportController {
 
 		return "admin/statistical";
 	}
-	
-	// end task developer by DongTHD
-
 }

@@ -25,9 +25,11 @@ import vn.fs.commom.CommomDataService;
 import vn.fs.entities.OrderEntity;
 import vn.fs.entities.OrderDetailEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
 import vn.fs.repository.UserRepository;
+import vn.fs.service.IUserService;
 
 /**
  * @author DongTHD
@@ -40,6 +42,9 @@ public class ProfileController extends CommomController{
 	UserRepository userRepository;
 
 	@Autowired
+	private IUserService userService;
+	
+	@Autowired
 	OrderRepository orderRepository;
 	
 	@Autowired
@@ -49,20 +54,20 @@ public class ProfileController extends CommomController{
 	CommomDataService commomDataService;
 
 	@GetMapping(value = "/profile")
-	public String profile(Model model, Principal principal, UserEntity user, Pageable pageable,
+	public String profile(Model model, Principal principal, UserDto userDto, Pageable pageable,
 			@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
 
 		if (principal != null) {
 
 			model.addAttribute("user", new UserEntity());
-			user = userRepository.findByEmail(principal.getName());
-			model.addAttribute("user", user);
+			userDto = userService.findByEmail(principal.getName());
+			model.addAttribute("user", userDto);
 		}
 		
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(6);
 
-		Page<OrderEntity> orderPage = findPaginated(PageRequest.of(currentPage - 1, pageSize), user);
+		Page<OrderEntity> orderPage = findPaginated(PageRequest.of(currentPage - 1, pageSize), userDto);
 
 		int totalPages = orderPage.getTotalPages();
 		if (totalPages > 0) {
@@ -70,15 +75,15 @@ public class ProfileController extends CommomController{
 			model.addAttribute("pageNumbers", pageNumbers);
 		}
 
-		commomDataService.commonData(model, user);
+		commomDataService.commonData(model, userDto);
 		model.addAttribute("orderByUser", orderPage);
 
 		return "web/profile";
 	}
 
-	public Page<OrderEntity> findPaginated(Pageable pageable, UserEntity user) {
+	public Page<OrderEntity> findPaginated(Pageable pageable, UserDto userDto) {
 
-		List<OrderEntity> orderPage = orderRepository.findOrderByUserId(user.getUserId());
+		List<OrderEntity> orderPage = orderRepository.findOrderByUserId(userDto.getUserId());
 
 		int pageSize = pageable.getPageSize();
 		int currentPage = pageable.getPageNumber();
@@ -98,13 +103,13 @@ public class ProfileController extends CommomController{
 	}
 	
 	@GetMapping("/order/detail/{order_id}")
-	public ModelAndView detail(Model model, Principal principal, UserEntity user, @PathVariable("order_id") Long id) {
+	public ModelAndView detail(Model model, Principal principal, UserDto userDto, @PathVariable("order_id") Long id) {
 
 		if (principal != null) {
 
 			model.addAttribute("user", new UserEntity());
-			user = userRepository.findByEmail(principal.getName());
-			model.addAttribute("user", user);
+			userDto = userService.findByEmail(principal.getName());
+			model.addAttribute("user", userDto);
 		}
 		
 		List<OrderDetailEntity> listO = orderDetailRepository.findByOrderId(id);
@@ -114,7 +119,7 @@ public class ProfileController extends CommomController{
 //		model.addAttribute("orderId", id);
 		// set active front-end
 //		model.addAttribute("menuO", "menu");
-		commomDataService.commonData(model, user);
+		commomDataService.commonData(model, userDto);
 		
 		return new ModelAndView("web/historyOrderDetail");
 	}

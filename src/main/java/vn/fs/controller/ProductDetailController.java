@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import vn.fs.commom.CommomDataService;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.ProductRepository;
 
 /**
@@ -27,12 +28,12 @@ public class ProductDetailController extends CommomController{
 	CommomDataService commomDataService;
 
 	@GetMapping(value = "productDetail")
-	public String productDetail(@RequestParam("id") Long id, Model model, UserEntity user) {
+	public String productDetail(@RequestParam("id") Long id, Model model, UserDto userDto) {
 
 		ProductEntity product = productRepository.findById(id).orElse(null);
 		model.addAttribute("product", product);
 
-		commomDataService.commonData(model, user);
+		commomDataService.commonData(model, userDto);
 		listProductByCategory10(model, product.getCategory().getCategoryId());
 
 		return "web/productDetail";

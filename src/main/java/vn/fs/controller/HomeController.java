@@ -14,8 +14,11 @@ import vn.fs.commom.CommomDataService;
 import vn.fs.entities.FavoriteEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.ProductDto;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
+import vn.fs.service.IProductService;
 
 /**
  * @author DongTHD
@@ -23,65 +26,42 @@ import vn.fs.repository.ProductRepository;
  */
 @Controller
 public class HomeController extends CommomController {
-	
+
 	@Autowired
 	ProductRepository productRepository;
-	
+
 	@Autowired
 	CommomDataService commomDataService;
-	
+
 	@Autowired
 	FavoriteRepository favoriteRepository;
 
-	@GetMapping(value = "/")
-	public String home(Model model, UserEntity user) {
+	@Autowired
+	private IProductService productService;
 
-		commomDataService.commonData(model, user);
-		bestSaleProduct20(model, user);
+	@GetMapping(value = "/")
+	public String home(Model model, UserDto userDto) {
+
+		commomDataService.commonData(model, userDto);
+		bestSaleProduct20(model, userDto);
 		return "web/home";
 	}
-	
+
 	// list product ở trang chủ limit 10 sản phẩm mới nhất
+	// Lấy ra được danh sách 10 sản phẩm mới nhất ở trang chủ
 	@ModelAttribute("listProduct10")
-	public List<ProductEntity> listproduct10(Model model) {
-		List<ProductEntity> productList = productRepository.listProductNew20();
+	public List<ProductDto> listProduct10(Model model) {
+		List<ProductDto> productList = productService.findListProductNewLimit();
 		model.addAttribute("productList", productList);
 		return productList;
 	}
-	
+
 	// Top 20 best sale.
-	public void bestSaleProduct20(Model model, UserEntity customer) {
-		List<Object[]> productList = productRepository.bestSaleProduct20();
-		if (productList != null) {
-			ArrayList<Integer> listIdProductArrayList = new ArrayList<>();
-			for (int i = 0; i < productList.size(); i++) {
-				String id = String.valueOf(productList.get(i)[0]);
-				listIdProductArrayList.add(Integer.valueOf(id));
-			}
-			List<ProductEntity> listProducts = productRepository.findByInventoryIds(listIdProductArrayList);
-
-			List<ProductEntity> listProductNew = new ArrayList<>();
-
-			for (ProductEntity product : listProducts) {
-
-				ProductEntity productEntity = new ProductEntity();
-
-				BeanUtils.copyProperties(product, productEntity);
-
-				FavoriteEntity save = favoriteRepository.selectSaves(productEntity.getProductId(), customer.getUserId());
-
-				if (save != null) {
-					productEntity.favorite = true;
-				} else {
-					productEntity.favorite = false;
-				}
-				listProductNew.add(productEntity);
-
-			}
-
+	// Top 20 Sản phẩm bán chạy nhất
+	public void bestSaleProduct20(Model model, UserDto userDto) {
+		List<ProductDto> listProductNew = productService.findTopProductBestSale(userDto);
+		if (listProductNew != null) {
 			model.addAttribute("bestSaleProduct20", listProductNew);
 		}
 	}
-
-
 }

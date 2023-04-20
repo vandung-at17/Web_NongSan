@@ -40,7 +40,7 @@ public class FavoriteController extends CommomController {
 	private UserConverter userConverter;
 	
 	@GetMapping(value = "/favorite")
-	public String favorite(Model model, UserEntity userDto) {
+	public String favorite(Model model, UserDto userDto) {
 		List<FavoriteEntity> favorites = favoriteRepository.selectAllSaves(userDto.getUserId());
 //		UserEntity userEntity = userConverter.toEntity(userDto);
 		commomDataService.commonData(model,userDto );
@@ -56,17 +56,17 @@ public class FavoriteController extends CommomController {
 		favorite.setUser(userEntity);
 		product.setFavorite(true);
 		favoriteRepository.save(favorite);
-		commomDataService.commonData(model, userEntity);
+		commomDataService.commonData(model, userDto);
 		return "redirect:/products";
 	}
 
 	@GetMapping(value = "/doUnFavorite")
-	public String doUnFavorite(Model model, ProductEntity product, UserEntity userEntity, @RequestParam("id") Long id) {
-		FavoriteEntity favorite = favoriteRepository.selectSaves(id, userEntity.getUserId());
+	public String doUnFavorite(Model model, ProductEntity product, UserDto userDto, @RequestParam("id") Long id) {
+		FavoriteEntity favorite = favoriteRepository.selectSaves(id, userDto.getUserId());
 		product = productRepository.findById(id).orElse(null);
 		product.setFavorite(false);
 		favoriteRepository.delete(favorite);
-		commomDataService.commonData(model, userEntity);
+		commomDataService.commonData(model, userDto);
 		return "redirect:/products";
 	}
 }

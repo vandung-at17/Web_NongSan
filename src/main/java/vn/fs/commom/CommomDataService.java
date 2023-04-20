@@ -19,8 +19,10 @@ import org.thymeleaf.context.Context;
 import vn.fs.entities.CartItem;
 import vn.fs.entities.OrderEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
+import vn.fs.service.IFavoriteService;
 import vn.fs.service.ShoppingCartService;
 
 /**
@@ -43,14 +45,17 @@ public class CommomDataService {
 	public JavaMailSender emailSender;
 	
 	@Autowired
+	private IFavoriteService favoriteService;
+	
+	@Autowired
 	TemplateEngine templateEngine;
 
-	public void commonData(Model model, UserEntity user) {
+	public void commonData(Model model, UserDto userDto) {
 		listCategoryByProductName(model);
 		Integer totalSave = 0;
 		// get count yêu thích
-		if (user != null) {
-			totalSave = favoriteRepository.selectCountSave(user.getUserId());
+		if (userDto.getUserId() != null) {
+			totalSave = favoriteService.selectCountFavoriteSave(userDto.getUserId());
 		}
 
 		Integer totalCartItems = shoppingCartService.getCount();
@@ -65,6 +70,7 @@ public class CommomDataService {
 	}
 	
 	// count product by category
+	// Lấy đếm sản phẩm theo danh mục
 	public void listCategoryByProductName(Model model) {
 
 		List<Object[]> coutnProductByCategory = productRepository.listCategoryByProductName();

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import vn.fs.converter.ProductConverter;
 import vn.fs.entities.CategoryEntity;
+import vn.fs.entities.FavoriteEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.model.dto.ProductDto;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.CategoryRepository;
+import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.service.IProductService;
 
@@ -36,6 +40,9 @@ public class ProductService implements IProductService{
 	
 	@Autowired
 	private ProductConverter productConverter;
+	
+	@Autowired
+	private FavoriteRepository favoriteRepository;
 	
 	@Override
 	public List<ProductDto> findAllProductOfPage(Pageable pageable) {
@@ -106,6 +113,50 @@ public class ProductService implements IProductService{
 		productEntity = productRepository.save(productEntity);
 		productDto = productConverter.toDto(productEntity);
 		return productDto;
+	}
+
+	@Override
+	public List<ProductDto> findListProductNewLimit() {
+		// TODO Auto-generated method stub
+		List<ProductDto> productDtos = new ArrayList<>();
+		List<ProductEntity> productEntities = productRepository.findListProductNew20();
+		for (ProductEntity productEntity : productEntities) {
+			ProductDto productDto = productConverter.toDto(productEntity);
+			productDtos.add(productDto);
+		}
+		return productDtos;
+	}
+
+	@Override
+	public List<ProductDto> findTopProductBestSale(UserDto userDto) {
+		// TODO Auto-generated method stub
+		List<ProductDto> productDtos = new ArrayList<>(); 
+		List<Object[]> objects = productRepository.bestSaleProduct20();
+		if (objects != null) {
+			ArrayList<Integer> listProductIdArrayList = new ArrayList<>();
+			for (int i = 0; i < objects.size(); i++) {
+				String idProduct = String.valueOf(objects.get(i)[0]);
+				listProductIdArrayList.add(Integer.valueOf(idProduct));
+			}
+			List<ProductEntity> listProducts = productRepository.findByInventoryIds(listProductIdArrayList);
+			List<ProductEntity> listProductNew = new ArrayList<>();
+			for (ProductEntity product : listProducts) {
+				ProductEntity productEntity = new ProductEntity();
+				BeanUtils.copyProperties(product, productEntity);
+				FavoriteEntity save = favoriteRepository.selectSaves(productEntity.getProductId(), userDto.getUserId());
+				if (save != null) {
+					productEntity.favorite = true;
+				}else {
+					productEntity.favorite = false;
+				}
+				listProductNew.add(productEntity);
+			}
+			for (ProductEntity productEntity : listProductNew) {
+				ProductDto productDto= productConverter.toDto(productEntity);
+				productDtos.add(productDto);
+			}
+		}
+		return productDtos;
 	}
 	
 }

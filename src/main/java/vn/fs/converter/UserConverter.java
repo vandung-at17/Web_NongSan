@@ -10,6 +10,7 @@ public class UserConverter {
 		UserDto userDto = new UserDto();
 		userDto.setUserId(userEntity.getUserId());
 		userDto.setName(userEntity.getName());
+		userDto.setEmail(userEntity.getEmail());
 		userDto.setPassword(userEntity.getPassword());
 		userDto.setAvatar(userEntity.getAvatar());
 		userDto.setRegisterDate(userEntity.getRegisterDate());
@@ -22,6 +23,7 @@ public class UserConverter {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setUserId(userDto.getUserId());
 		userEntity.setName(userDto.getName());
+		userEntity.setEmail(userDto.getEmail());
 		userEntity.setPassword(userDto.getPassword());
 		userEntity.setAvatar(userDto.getAvatar());
 		userEntity.setRegisterDate(userDto.getRegisterDate());
