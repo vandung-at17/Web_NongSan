@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import vn.fs.entities.CategoryEntity;
-import vn.fs.entities.UserEntity;
 import vn.fs.model.dto.UserDto;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.ProductRepository;
@@ -37,7 +36,6 @@ public class CommomController {
 
 	@ModelAttribute(value = "user")
 	public UserDto user(Model model, Principal principal, UserDto userDto) {
-
 		if (principal != null) {
 			model.addAttribute("userDto", new UserDto());
 			userDto = userService.findByEmail(principal.getName());

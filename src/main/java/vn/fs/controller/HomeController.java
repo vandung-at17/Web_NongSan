@@ -1,9 +1,7 @@
 package vn.fs.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,12 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import vn.fs.commom.CommomDataService;
-import vn.fs.entities.FavoriteEntity;
-import vn.fs.entities.ProductEntity;
-import vn.fs.entities.UserEntity;
 import vn.fs.model.dto.ProductDto;
 import vn.fs.model.dto.UserDto;
-import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.service.IProductService;
 
@@ -32,9 +26,6 @@ public class HomeController extends CommomController {
 
 	@Autowired
 	CommomDataService commomDataService;
-
-	@Autowired
-	FavoriteRepository favoriteRepository;
 
 	@Autowired
 	private IProductService productService;

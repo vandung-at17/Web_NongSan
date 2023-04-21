@@ -9,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.UserDto;
 import vn.fs.repository.UserRepository;
+import vn.fs.service.IUserService;
 
 /**
  * @author DongTHD
@@ -17,6 +19,9 @@ import vn.fs.repository.UserRepository;
  */
 @Controller
 public class UserController{
+	
+	@Autowired
+	private IUserService userService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -24,8 +29,8 @@ public class UserController{
 	@GetMapping(value = "/admin/users")
 	public String customer(Model model, Principal principal) {
 		
-		UserEntity user = userRepository.findByEmail(principal.getName());
-		model.addAttribute("user", user);
+		UserDto userDto = userService.findByEmail(principal.getName());
+		model.addAttribute("user", userDto);
 		
 		List<UserEntity> users = userRepository.findAll();
 		model.addAttribute("users", users);

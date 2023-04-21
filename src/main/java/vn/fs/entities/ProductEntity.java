@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +40,7 @@ public class ProductEntity implements Serializable {
 	
 	private double price;
 	
-	private int discount;
+	private int discount; // Giảm giá
 	
 	private String productImage;
 	
@@ -48,9 +49,9 @@ public class ProductEntity implements Serializable {
 	private Date enteredDate;
 	private Boolean status;
 	
-	public Boolean favorite;
+	public Boolean favorite;////
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoryId")
 	private CategoryEntity category;
 

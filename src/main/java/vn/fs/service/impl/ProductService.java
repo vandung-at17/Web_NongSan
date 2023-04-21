@@ -20,6 +20,7 @@ import vn.fs.entities.FavoriteEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.model.dto.ProductDto;
 import vn.fs.model.dto.UserDto;
+import vn.fs.model.response.CategoryResponse;
 import vn.fs.repository.CategoryRepository;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
@@ -158,5 +159,36 @@ public class ProductService implements IProductService{
 		}
 		return productDtos;
 	}
-	
+
+	@Override
+	public List<ProductDto> findProductByCategory(Long id) {
+		// TODO Auto-generated method stub
+		List<ProductDto> productDtos = new ArrayList<>();
+		List<ProductEntity> productEntities = productRepository.listProductByCategory(id);
+		for (ProductEntity productEntity : productEntities) {
+			ProductDto productDto = productConverter.toDto(productEntity);
+			productDtos.add(productDto);
+		}
+		return productDtos;
+	}
+
+	@Override
+	public List<CategoryResponse> listCategoryByProductName() {
+		// TODO Auto-generated method stub
+		List<CategoryResponse> categoryResponses = new ArrayList<>();
+		List<Object[]> objects = productRepository.listCategoryByProductName();
+		for (int i = 0; i <objects.size();i++ ) {
+			CategoryResponse categoryResponse = new CategoryResponse();
+			String idCategory = String.valueOf(objects.get(i)[0]);
+			categoryResponse.setCategory_id(Long.valueOf(idCategory));
+			categoryResponse.setCategory_name(String.valueOf(objects.get(i)[1]));
+			String countProduct = String.valueOf(objects.get(i)[2]);
+			categoryResponse.setCountProduct(Integer.valueOf(countProduct));
+			categoryResponses.add(categoryResponse);
+		}
+		if (categoryResponses != null) {
+			return categoryResponses;
+		}
+		return null;
+	}
 }

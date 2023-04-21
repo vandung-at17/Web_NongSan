@@ -89,6 +89,7 @@ public class CartController extends CommomController {
 	}
 
 	// add cartItem
+	// Thêm vào giỏ hàng
 	@GetMapping(value = "/addToCart")
 	public String add(@RequestParam("productId") Long productId, HttpServletRequest request, Model model) {
 
@@ -131,6 +132,7 @@ public class CartController extends CommomController {
 	}
 
 	// show check out
+	// Hiển thị thanh toán
 	@GetMapping(value = "/checkout")
 	public String checkOut(Model model, UserDto userDto) {
 

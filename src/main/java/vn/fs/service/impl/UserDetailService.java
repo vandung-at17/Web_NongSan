@@ -1,4 +1,4 @@
-package vn.fs.service;
+package vn.fs.service.impl;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

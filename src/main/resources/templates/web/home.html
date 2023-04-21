@@ -105,10 +105,10 @@
 		<div class="container">
 			<ul class="suggest-slider slider-arrow">
 				<li th:each="item : ${coutnProductByCategory}">
-					<a class="suggest-card" th:href="@{/productByCategory(id=${item[0]})}">
+					<a class="suggest-card" th:href="@{/productByCategory(id=${item.category_id})}">
 						<img src="images/suggest/02.jpg" alt="suggest" />
 							<h5>
-								[[${item[1]}]] <span>số lượng : [[${item[2]}]] </span>
+								[[${item.category_name}]] <span>số lượng : [[${item.countProduct}]] </span>
 							</h5>
 					</a>
 				</li>

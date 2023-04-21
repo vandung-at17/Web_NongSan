@@ -65,11 +65,11 @@
                 <ul class="shop-widget-list shop-widget-scroll">
                   <li th:each="item : ${coutnProductByCategory}">
 	                    <div class="shop-widget-content">
-	                    	<a href="javascript:void(0);" th:href="@{/productByCategory(id=${item[0]})}">
-	                      		<label for="cate1" style="color: #119744">[[${item[1]}]]</label>
+	                    	<a href="javascript:void(0);" th:href="@{/productByCategory(id=${item.category_id})}">
+	                      		<label for="cate1" style="color: #119744">[[${item.category_name}]]</label>
 	                       </a>
 	                    </div>
-	                    <span class="shop-widget-number">([[${item[2]}]])</span>
+	                    <span class="shop-widget-number">([[${item.countProduct}]])</span>
                   </li>
                 </ul>
               
@@ -185,10 +185,10 @@
 	                  <p class="page-info"></p>
 	                  <ul class="pagination">
 	                    
-	                    <li th:each="pageNumber : ${pageNumbers}" th:if="${products.totalPages > 0}" class="page-item">
+	                    <li th:each="pageNumber : ${pageNumbers}" th:if="${totalPages > 0}" class="page-item">
 	                      <a class="page-link"
 	                      		th:href="@{/products(size=${products.size}, page=${pageNumber})}"
-	                      		th:class="${pageNumber==products.number + 1} ? 'page-link active'">
+	                      		th:class="${pageNumber==currentPage} ? 'page-link active'">
 	                      		[[${pageNumber}]]
 	                      </a>
 	                    </li>

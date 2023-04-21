@@ -107,27 +107,6 @@ public class ProductController{
 	@PostMapping(value = "/addProduct")
 	public String addProduct(@ModelAttribute("product") ProductDto productDto , ModelMap model,
 			@RequestParam("file") MultipartFile file, HttpServletRequest httpServletRequest) {
-
-//		try {
-//
-//			File convFile = new File(pathUploadImage + "/" + file.getOriginalFilename());
-//			FileOutputStream fos = new FileOutputStream(convFile);
-//			fos.write(file.getBytes());
-//			fos.close();
-//		} catch (IOException e) {
-//
-//		}
-//		product.setStatus(true);
-//		product.setFavorite(false);
-//		product.setProductImage(file.getOriginalFilename());
-//		product = productRepository.save(product);
-//		if (null != product) {
-//			model.addAttribute("message", "Update success");
-//			model.addAttribute("product", product);
-//		} else {
-//			model.addAttribute("message", "Update failure");
-//			model.addAttribute("product", product);
-//		}
 		ProductDto dto = productService.insert(productDto, file);
 		if (null != dto) {
 			model.addAttribute("message", "Update success");

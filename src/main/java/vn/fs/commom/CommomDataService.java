@@ -18,11 +18,12 @@ import org.thymeleaf.context.Context;
 
 import vn.fs.entities.CartItem;
 import vn.fs.entities.OrderEntity;
-import vn.fs.entities.UserEntity;
 import vn.fs.model.dto.UserDto;
+import vn.fs.model.response.CategoryResponse;
 import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.service.IFavoriteService;
+import vn.fs.service.IProductService;
 import vn.fs.service.ShoppingCartService;
 
 /**
@@ -42,6 +43,9 @@ public class CommomDataService {
 	ProductRepository productRepository;
 	
 	@Autowired
+	private IProductService productService;
+	
+	@Autowired
 	public JavaMailSender emailSender;
 	
 	@Autowired
@@ -59,7 +63,6 @@ public class CommomDataService {
 		}
 
 		Integer totalCartItems = shoppingCartService.getCount();
-
 		model.addAttribute("totalSave", totalSave);
 
 		model.addAttribute("totalCartItems", totalCartItems);
@@ -73,7 +76,8 @@ public class CommomDataService {
 	// Lấy đếm sản phẩm theo danh mục
 	public void listCategoryByProductName(Model model) {
 
-		List<Object[]> coutnProductByCategory = productRepository.listCategoryByProductName();
+		//List<Object[]> coutnProductByCategory = productRepository.listCategoryByProductName();
+		List<CategoryResponse> coutnProductByCategory = productService.listCategoryByProductName();
 		model.addAttribute("coutnProductByCategory", coutnProductByCategory);
 	}
 	

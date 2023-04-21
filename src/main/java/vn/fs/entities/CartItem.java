@@ -15,8 +15,8 @@ public class CartItem {
 
 	private Long id;
 	private String name;
-	private double unitPrice;
-	private int quantity;
-	private double totalPrice;
+	private double unitPrice;// đơn vị giá
+	private int quantity;// Số lượng 
+	private double totalPrice;// Tổng thành tiền
 	private ProductEntity product;
 }
