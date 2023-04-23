@@ -48,7 +48,7 @@ public class FavoriteController extends CommomController {
 		return "web/favorite";
 	}
 
-	@PostMapping(value = "/doFavorite")
+	@GetMapping(value = "/doFavorite")
 	public String doFavorite(Model model, FavoriteEntity favorite, UserDto userDto, @RequestParam("id") Long id) {
 		ProductEntity product = productRepository.findById(id).orElse(null);
 		UserEntity userEntity = userConverter.toEntity(userDto);

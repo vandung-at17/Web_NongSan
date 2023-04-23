@@ -23,7 +23,7 @@ import vn.fs.repository.UserRepository;
 public class UserDetailService implements UserDetailsService {
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

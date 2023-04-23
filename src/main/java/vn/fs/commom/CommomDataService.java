@@ -16,7 +16,7 @@ import org.springframework.ui.Model;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import vn.fs.entities.CartItem;
+import vn.fs.entities.CartItemEntity;
 import vn.fs.entities.OrderEntity;
 import vn.fs.model.dto.UserDto;
 import vn.fs.model.response.CategoryResponse;
@@ -24,7 +24,7 @@ import vn.fs.repository.FavoriteRepository;
 import vn.fs.repository.ProductRepository;
 import vn.fs.service.IFavoriteService;
 import vn.fs.service.IProductService;
-import vn.fs.service.ShoppingCartService;
+import vn.fs.service.IShoppingCartService;
 
 /**
  * @author DongTHD
@@ -37,7 +37,7 @@ public class CommomDataService {
 	FavoriteRepository favoriteRepository;
 	
 	@Autowired
-	ShoppingCartService shoppingCartService;
+	IShoppingCartService shoppingCartService;
 	
 	@Autowired
 	ProductRepository productRepository;
@@ -62,12 +62,12 @@ public class CommomDataService {
 			totalSave = favoriteService.selectCountFavoriteSave(userDto.getUserId());
 		}
 
-		Integer totalCartItems = shoppingCartService.getCount();
+		Integer totalCartItems = shoppingCartService.getCountCart();
 		model.addAttribute("totalSave", totalSave);
 
 		model.addAttribute("totalCartItems", totalCartItems);
 
-		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
+		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
 		model.addAttribute("cartItems", cartItems);
 
 	}
@@ -82,7 +82,7 @@ public class CommomDataService {
 	}
 	
 	//sendEmail by order success
-	public void sendSimpleEmail(String email, String subject, String contentEmail, Collection<CartItem> cartItems,
+	public void sendSimpleEmail(String email, String subject, String contentEmail, Collection<CartItemEntity> cartItems,
 			double totalPrice, OrderEntity orderFinal) throws MessagingException {
 		Locale locale = LocaleContextHolder.getLocale();
 

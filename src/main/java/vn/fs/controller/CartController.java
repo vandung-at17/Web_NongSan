@@ -1,5 +1,6 @@
 package vn.fs.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -27,16 +28,22 @@ import com.paypal.base.rest.PayPalRESTException;
 import vn.fs.commom.CommomDataService;
 import vn.fs.config.PaypalPaymentIntent;
 import vn.fs.config.PaypalPaymentMethod;
-import vn.fs.entities.CartItem;
-import vn.fs.entities.OrderEntity;
+import vn.fs.converter.ProductConverter;
+import vn.fs.converter.UserConverter;
+import vn.fs.entities.CartItemEntity;
 import vn.fs.entities.OrderDetailEntity;
+import vn.fs.entities.OrderEntity;
 import vn.fs.entities.ProductEntity;
 import vn.fs.entities.UserEntity;
+import vn.fs.model.dto.ProductDto;
 import vn.fs.model.dto.UserDto;
+import vn.fs.model.response.CartItemResponse;
 import vn.fs.repository.OrderDetailRepository;
 import vn.fs.repository.OrderRepository;
+import vn.fs.repository.ProductRepository;
+import vn.fs.service.IProductService;
+import vn.fs.service.IShoppingCartService;
 import vn.fs.service.PaypalService;
-import vn.fs.service.ShoppingCartService;
 import vn.fs.util.Utils;
 
 /**
@@ -50,19 +57,30 @@ public class CartController extends CommomController {
 	HttpSession session;
 
 	@Autowired
-	CommomDataService commomDataService;
+	private CommomDataService commomDataService;
 
 	@Autowired
-	ShoppingCartService shoppingCartService;
+	private IShoppingCartService shoppingCartService;
 
 	@Autowired
 	private PaypalService paypalService;
 
 	@Autowired
-	OrderRepository orderRepository;
+	private IProductService productService;
 
 	@Autowired
-	OrderDetailRepository orderDetailRepository;
+	private ProductConverter productConverter;
+	@Autowired
+	private OrderRepository orderRepository;
+
+	@Autowired
+	private ProductRepository productRepository;
+	
+	@Autowired
+	private UserConverter userConverter;
+
+	@Autowired
+	private OrderDetailRepository orderDetailRepository;
 
 	public OrderEntity orderFinal = new OrderEntity();
 
@@ -73,40 +91,62 @@ public class CartController extends CommomController {
 	@GetMapping(value = "/shoppingCart_checkout")
 	public String shoppingCart(Model model) {
 
-		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
+		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
 		model.addAttribute("cartItems", cartItems);
 		model.addAttribute("total", shoppingCartService.getAmount());
 		double totalPrice = 0;
-		for (CartItem cartItem : cartItems) {
+		for (CartItemEntity cartItem : cartItems) {
 			double price = cartItem.getQuantity() * cartItem.getProduct().getPrice();
 			totalPrice += price - (price * cartItem.getProduct().getDiscount() / 100);
 		}
 
 		model.addAttribute("totalPrice", totalPrice);
-		model.addAttribute("totalCartItems", shoppingCartService.getCount());
+		model.addAttribute("totalCartItems", shoppingCartService.getCountCart());
 
 		return "web/shoppingCart_checkout";
 	}
 
 	// add cartItem
 	// Thêm vào giỏ hàng
+//	@GetMapping(value = "/addToCart")
+//	public String add(@RequestParam("productId") Long productId, HttpServletRequest request, Model model) {
+//
+//		ProductEntity product = productRepository.findById(productId).orElse(null);
+//
+//		session = request.getSession();
+//		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
+//		if (product != null) {
+//			CartItemEntity item = new CartItemEntity();
+//			BeanUtils.copyProperties(product, item);
+//			item.setQuantity(1);
+//			item.setProduct(product);
+//			item.setId(productId);
+//			shoppingCartService.add(item);
+//		}
+//		session.setAttribute("cartItems", cartItems);
+//		model.addAttribute("totalCartItems", shoppingCartService.getCount());
+//
+//		return "redirect:/products";
+//	}
+
+	// Thêm vào giỏ hàng
 	@GetMapping(value = "/addToCart")
 	public String add(@RequestParam("productId") Long productId, HttpServletRequest request, Model model) {
 
-		ProductEntity product = productRepository.findById(productId).orElse(null);
+		ProductDto productDto = productService.findById(productId);
 
 		session = request.getSession();
-		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
-		if (product != null) {
-			CartItem item = new CartItem();
-			BeanUtils.copyProperties(product, item);
+		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
+		if (productDto != null) {
+			CartItemEntity item = new CartItemEntity();
+			BeanUtils.copyProperties(productDto, item);
 			item.setQuantity(1);
-			item.setProduct(product);
+			item.setProduct(productConverter.toEntity(productDto));
 			item.setId(productId);
 			shoppingCartService.add(item);
 		}
 		session.setAttribute("cartItems", cartItems);
-		model.addAttribute("totalCartItems", shoppingCartService.getCount());
+		model.addAttribute("totalCartItems", shoppingCartService.getCountCart());
 
 		return "redirect:/products";
 	}
@@ -117,17 +157,17 @@ public class CartController extends CommomController {
 	public String remove(@PathVariable("id") Long id, HttpServletRequest request, Model model) {
 		ProductEntity product = productRepository.findById(id).orElse(null);
 
-		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
+		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
 		session = request.getSession();
 		if (product != null) {
-			CartItem item = new CartItem();
+			CartItemEntity item = new CartItemEntity();
 			BeanUtils.copyProperties(product, item);
 			item.setProduct(product);
 			item.setId(id);
 			cartItems.remove(session);
 			shoppingCartService.remove(item);
 		}
-		model.addAttribute("totalCartItems", shoppingCartService.getCount());
+		model.addAttribute("totalCartItems", shoppingCartService.getCountCart());
 		return "redirect:/checkout";
 	}
 
@@ -139,18 +179,21 @@ public class CartController extends CommomController {
 		OrderEntity order = new OrderEntity();
 		model.addAttribute("order", order);
 
-		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
+		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
+		for (CartItemEntity cartItemEntity : cartItems) {
+			cartItemEntity.setProduct(productRepository.getById(cartItemEntity.getProduct().getProductId()));
+		}
 		model.addAttribute("cartItems", cartItems);
 		model.addAttribute("total", shoppingCartService.getAmount());
-		model.addAttribute("NoOfItems", shoppingCartService.getCount());
+		model.addAttribute("NoOfItems", shoppingCartService.getCountCart());
 		double totalPrice = 0;
-		for (CartItem cartItem : cartItems) {
+		for (CartItemEntity cartItem : cartItems) {
 			double price = cartItem.getQuantity() * cartItem.getProduct().getPrice();
 			totalPrice += price - (price * cartItem.getProduct().getDiscount() / 100);
 		}
 
 		model.addAttribute("totalPrice", totalPrice);
-		model.addAttribute("totalCartItems", shoppingCartService.getCount());
+		model.addAttribute("totalCartItems", shoppingCartService.getCountCart());
 		commomDataService.commonData(model, userDto);
 
 		return "web/shoppingCart_checkout";
@@ -159,15 +202,15 @@ public class CartController extends CommomController {
 	// submit checkout
 	@PostMapping(value = "/checkout")
 	@Transactional
-	public String checkedOut(Model model, OrderEntity order, HttpServletRequest request, UserEntity userEntity)
+	public String checkedOut(Model model, OrderEntity order, HttpServletRequest request, UserDto userDto)
 			throws MessagingException {
 
 		String checkOut = request.getParameter("checkOut");
 
-		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
+		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
 
 		double totalPrice = 0;
-		for (CartItem cartItem : cartItems) {
+		for (CartItemEntity cartItem : cartItems) {
 			double price = cartItem.getQuantity() * cartItem.getProduct().getPrice();
 			totalPrice += price - (price * cartItem.getProduct().getDiscount() / 100);
 		}
@@ -198,11 +241,11 @@ public class CartController extends CommomController {
 		order.setStatus(0);
 		order.getOrderId();
 		order.setAmount(totalPrice);
-		order.setUser(userEntity);
+		order.setUser(userConverter.toEntity(userDto));
 
 		orderRepository.save(order);
 
-		for (CartItem cartItem : cartItems) {
+		for (CartItemEntity cartItem : cartItems) {
 			OrderDetailEntity orderDetail = new OrderDetailEntity();
 			orderDetail.setQuantity(cartItem.getQuantity());
 			orderDetail.setOrder(order);
@@ -213,7 +256,7 @@ public class CartController extends CommomController {
 		}
 
 		// sendMail
-		commomDataService.sendSimpleEmail(userEntity.getEmail(), "Greeny-Shop Xác Nhận Đơn hàng", "aaaa", cartItems,
+		commomDataService.sendSimpleEmail(userDto.getEmail(), "Greeny-Shop Xác Nhận Đơn hàng", "aaaa", cartItems,
 				totalPrice, order);
 
 		shoppingCartService.clear();
@@ -227,17 +270,17 @@ public class CartController extends CommomController {
 	@GetMapping(URL_PAYPAL_SUCCESS)
 	public String successPay(@RequestParam("" + "" + "") String paymentId, @RequestParam("PayerID") String payerId,
 			HttpServletRequest request, UserEntity user, Model model) throws MessagingException {
-		Collection<CartItem> cartItems = shoppingCartService.getCartItems();
+		Collection<CartItemEntity> cartItems = shoppingCartService.getCartItems();
 		model.addAttribute("cartItems", cartItems);
 		model.addAttribute("total", shoppingCartService.getAmount());
 
 		double totalPrice = 0;
-		for (CartItem cartItem : cartItems) {
+		for (CartItemEntity cartItem : cartItems) {
 			double price = cartItem.getQuantity() * cartItem.getProduct().getPrice();
 			totalPrice += price - (price * cartItem.getProduct().getDiscount() / 100);
 		}
 		model.addAttribute("totalPrice", totalPrice);
-		model.addAttribute("totalCartItems", shoppingCartService.getCount());
+		model.addAttribute("totalCartItems", shoppingCartService.getCountCart());
 
 		try {
 			Payment payment = paypalService.executePayment(paymentId, payerId);
@@ -252,7 +295,7 @@ public class CartController extends CommomController {
 				orderFinal.setAmount(totalPrice);
 				orderRepository.save(orderFinal);
 
-				for (CartItem cartItem : cartItems) {
+				for (CartItemEntity cartItem : cartItems) {
 					OrderDetailEntity orderDetail = new OrderDetailEntity();
 					orderDetail.setQuantity(cartItem.getQuantity());
 					orderDetail.setOrder(orderFinal);

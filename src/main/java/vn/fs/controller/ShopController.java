@@ -78,6 +78,18 @@ public class ShopController extends CommomController {
 		// Mặc định limit = 12
 		Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
 		List<ProductDto> productDtosPage = productService.findAllProductOfPage(pageable);
+		for (ProductDto productDto : productDtosPage) {
+			if (userDto.getUserId() != null) {
+				FavoriteDto favoriteDto = favoriteService.selectSaves(productDto.getProductId(), userDto.getUserId());
+				if (favoriteDto != null) {
+					productDto.setFavorite(true);
+				}else {
+					productDto.setFavorite(false);
+				}
+			}else {
+				productDto.setFavorite(false);
+			}
+		}
 		PaginateResponse paginateResponse = new PaginateResponse();
 		paginateResponse.setTotalPage((int) Math.ceil((double) productService.getTotalItem() / pageSize));
 		paginateResponse.setPage(currentPage);
@@ -228,8 +240,9 @@ public class ShopController extends CommomController {
 				} else {
 					productDto.setFavorite(false);
 				}
+			}else {
+				productDto.setFavorite(false);
 			}
-			productDto.setFavorite(false);
 		}
 		model.addAttribute("products", productDtos);
 		commomDataService.commonData(model, userDto);

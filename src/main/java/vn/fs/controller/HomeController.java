@@ -2,7 +2,14 @@ package vn.fs.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +60,15 @@ public class HomeController extends CommomController {
 		List<ProductDto> listProductNew = productService.findTopProductBestSale(userDto);
 		if (listProductNew != null) {
 			model.addAttribute("bestSaleProduct20", listProductNew);
+		}
+	}
+	
+	@GetMapping(value="/logout")
+	public void LogOut(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		session.invalidate();
+		if (authentication != null) {
+			new SecurityContextLogoutHandler().logout(request, response, authentication);
 		}
 	}
 }

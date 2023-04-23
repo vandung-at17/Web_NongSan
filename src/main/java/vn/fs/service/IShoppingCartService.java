@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.springframework.stereotype.Service;
 
-import vn.fs.entities.CartItem;
+import vn.fs.entities.CartItemEntity;
 import vn.fs.entities.ProductEntity;
 
 /**
@@ -12,19 +12,19 @@ import vn.fs.entities.ProductEntity;
  *
  */
 @Service
-public interface ShoppingCartService {
+public interface IShoppingCartService {
 
-	int getCount();
+	int getCountCart();
 
 	double getAmount();
 
 	void clear();
 
-	Collection<CartItem> getCartItems();
+	Collection<CartItemEntity> getCartItems();
 
-	void remove(CartItem item);
+	void remove(CartItemEntity item);
 
-	void add(CartItem item);
+	void add(CartItemEntity item);
 
 	void remove(ProductEntity product);
 
